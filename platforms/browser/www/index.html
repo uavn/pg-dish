@@ -5,15 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
     <title>My App</title>
 
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
 
     <!-- Path to Framework7 Library CSS-->
     <link rel="stylesheet" href="framework7/css/framework7.material.min.css">
     <link rel="stylesheet" href="framework7/css/framework7.material.colors.min.css">
-    <link rel="stylesheet" href="framework7/css/framework7-icons.css">
     <!-- Path to your custom app styles-->
     <link rel="stylesheet" href="css/app.css">
   </head>
@@ -23,7 +22,7 @@
       <!-- Your main view, should have "view-main" class -->
       <div class="view view-main">
         <!-- Pages container, because we use fixed navbar and toolbar, it has additional appropriate classes-->
-        <div class="pages navbar-fixed toolbar-fixed">
+        <div class="pages navbar-fixed _toolbar-fixed">
           <!-- Page, "data-page" contains page name -->
           <div data-page="index" class="page">
  
@@ -34,7 +33,7 @@
                     <a href="#" class="link icon-only open-panel"><i class="material-icons">menu</i></a>
                 </div>
                 
-                <div class="center">Awesome App</div>
+                <div class="center">Рецепты</div>
 
                 <div class="right">
                 </div>
@@ -43,26 +42,25 @@
 
             <!-- Scrollable page content -->
             <div class="page-content">
-              <p>Page content goes here</p>
-              <!-- Link to another page -->
-              <a href="people.html">About app</a>
+                <div class="content-block-title">Категории</div>
+                <div class="content-block" id="categoriesContent"></div>
             </div>
  
             <div class="toolbar tabbar toolbar-bottom">
-                <div class="toolbar-inner">
-                    <a href="#tab1" class="tab-link active">
+                <div class="toolbar-inner art-tabs">
+                    <a href="#" class="tab-categories tab-link active">
                         <i class="material-icons">dashboard</i> Категории
                     </a>
 
-                    <a href="#tab4" class="tab-link">
+                    <a href="#" class="tab-nations tab-link">
                         <i class="material-icons">language</i> Национальные
                     </a>
 
-                    <a href="#tab2" class="tab-link">
+                    <a href="#" class="tab-link">
                         <i class="material-icons">find_in_page</i> Рецепты
                     </a>
 
-                    <a href="#tab4" class="tab-link">
+                    <a href="#" class="tab-link">
                         <i class="material-icons">bookmark_border</i> Избранные
                     </a>
                 </div>
@@ -147,6 +145,33 @@
       </div>
     </div>
 
+    <!-- Templates -->
+    <script id="categories" type="text/template7">
+        <div class="list-block">
+            <ul>
+                {{#each categoies}}
+                    <li>
+                        <div class="item-content">
+                            <div class="item-media">
+                                <i class="material-icons">keyboard_arrow_right</i>
+                            </div>
+
+                            <div class="item-inner">
+                                <div class="item-title">
+                                    <a href="#" data-id="{{this.id}}">{{this.name}}</a>
+                                </div>
+
+                                <div class="item-after">
+                                    {{this.cnt}}
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                {{/each}}
+            </ul>
+        </div>
+    </script>
+    <!-- /Templates -->
 
     <!-- Path to Framework7 Library JS-->
     <script type="text/javascript" src="framework7/js/framework7.min.js"></script>
