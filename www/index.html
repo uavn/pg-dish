@@ -56,11 +56,11 @@
                         <i class="material-icons">language</i> Национальные
                     </a>
 
-                    <a href="#" class="tab-link">
+                    <a href="#" class="tab-all tab-link">
                         <i class="material-icons">find_in_page</i> Рецепты
                     </a>
 
-                    <a href="#" class="tab-link">
+                    <a href="#" class="tab-fav tab-link">
                         <i class="material-icons">bookmark_border</i> Избранные
                     </a>
                 </div>
@@ -152,17 +152,13 @@
                 {{#each categoies}}
                     <li>
                         <div class="item-content">
-                            <div class="item-media">
-                                <i class="material-icons">keyboard_arrow_right</i>
-                            </div>
-
                             <div class="item-inner">
                                 <div class="item-title">
-                                    <a href="#" data-id="{{this.id}}">{{this.name}}</a>
+                                    <a href="recepts.html" data-id="{{this.id}}">{{this.name}}</a>
                                 </div>
 
                                 <div class="item-after">
-                                    {{this.cnt}}
+                                    {{this.cnt*1}}
                                 </div>
                             </div>
                         </div>
