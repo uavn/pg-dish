@@ -331,7 +331,7 @@ var app = {
 						dataType: 'json',
 						url: 'http://r.uartema.com/api/api.php/category/' + resp.categoryId,
 						success: function (resp) {
-							$$('#category-chip').html(resp.name).parents('.chip').show();
+							$$('#category-chip').html(resp.name).parents('.chip').style('display', 'inline');
 						}
 					});
 				}
@@ -341,7 +341,7 @@ var app = {
 						dataType: 'json',
 						url: 'http://r.uartema.com/api/api.php/nationality/' + resp.nationalityId,
 						success: function (resp) {
-							$$('#nation-chip').html(resp.name).parents('.chip').show();
+							$$('#nation-chip').html(resp.name).parents('.chip').style('display', 'inline');
 						}
 					});
 				}
@@ -351,7 +351,7 @@ var app = {
 						dataType: 'json',
 						url: 'http://r.uartema.com/api/api.php/type/' + resp.typeId,
 						success: function (resp) {
-							$$('#type-chip').html(resp.name).parents('.chip').show();
+							$$('#type-chip').html(resp.name).parents('.chip').style('display', 'inline');
 						}
 					});
 				}
