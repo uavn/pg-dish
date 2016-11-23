@@ -41,6 +41,10 @@ var app = {
             app.loadNations();
         });
 
+        $$(document).on('click', '.open-category', function() {
+            app.loadRecepts($$(this).data('id'), 1);
+        });
+
         this.loadCategories();
     },
 
@@ -70,6 +74,29 @@ var app = {
                 var categoriesTemplate = $$('script#categories').html();
                 var compiledCategoriesTemplate = Template7.compile(categoriesTemplate);
                 $$('#categoriesContent').html(compiledCategoriesTemplate({categoies: resp.nationality}));
+
+                myApp.hideIndicator();
+            }
+        });
+    },
+
+    loadRecepts: function(categoryId, page) {
+        if ( page <= 1 ) page = 1;
+
+        myApp.showIndicator();
+
+        $$.ajax({
+            dataType: 'json',
+            data: {
+                filter: 'categoryId,eq,'+categoryId,
+                page: page+',10',
+                order: 'id,desc'
+            },
+            url: 'http://r.uartema.com/api/api.php/dish?transform=1',
+            success: function( resp ) {
+                var receptsTemplate = $$('script#recepts').html();
+                var compiledReceptsTemplate = Template7.compile(receptsTemplate);
+                $$('#categoriesContent').html(compiledReceptsTemplate({recepts: resp.dish}));
 
                 myApp.hideIndicator();
             }
