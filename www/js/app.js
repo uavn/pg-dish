@@ -245,9 +245,7 @@ var app = {
     listRecepts: function(dishes, categories, nationalities) {
     	var recepts = [];
 
-    	alert(10);
     	$$.each(dishes, function(i, d) {
-    		alert(9);
     		var v = {};
     		if ( d.categoryId ) {
     			v.category = categories[d.categoryId];
@@ -259,13 +257,8 @@ var app = {
 
     		v.recept = d;
 
-    		alert(8);
-
 			recepts.push(v);
-			alert(7);
     	});
-
-    	alert(1);
 
     	var receptsTemplate = $$('script#recepts').html();
         var compiledReceptsTemplate = Template7.compile(receptsTemplate);
@@ -273,22 +266,16 @@ var app = {
         	recepts: recepts
         });
 
-        alert(2);
-
         if ( $$('#myContent').find('.list-block').length ) {
-        	alert(4);
         	var lis = $$(content).find('li');
         	if ( !lis.length ) {
 				myApp.detachInfiniteScroll($$('.infinite-scroll'));
         	}
 
     		$$('#myContent ul').append(lis);
-    		alert(5);
         } else {
-        	alert(3);
     		$$('#myContent').append(content);
     		myApp.attachInfiniteScroll($$('.infinite-scroll'));
-    		alert(5);
         }
 
         app.loading = false;
