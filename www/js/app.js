@@ -179,7 +179,7 @@ var app = {
         	filter = 'name,cs,' + app.q;
         }
 
-        alert(1);
+        
 
         $$.ajax({
             dataType: 'json',
@@ -202,7 +202,6 @@ var app = {
                 });
 
                 if ( categoriesIds ) {
-                	alert(2);
 	                $$.ajax({
 			            dataType: 'json',
 			            data: {
@@ -216,7 +215,6 @@ var app = {
 			            	});
 
 			            	if ( nationIds ) {
-			            		alert(3);
 				            	$$.ajax({
 						            dataType: 'json',
 						            data: {
@@ -245,7 +243,6 @@ var app = {
     },
 
     listRecepts: function(dishes, categories, nationalities) {
-    	alert(4);
     	var recepts = [];
 
     	$$.each(dishes, function(i, d) {
@@ -264,22 +261,30 @@ var app = {
 			recepts.push(recept);
     	});
 
+    	alert(1);
+
     	var receptsTemplate = $$('script#recepts').html();
         var compiledReceptsTemplate = Template7.compile(receptsTemplate);
         var content = compiledReceptsTemplate({
         	recepts: recepts
         });
 
+        alert(2);
+
         if ( $$('#myContent').find('.list-block').length ) {
+        	alert(4);
         	var lis = $$(content).find('li');
         	if ( !lis.length ) {
 				myApp.detachInfiniteScroll($$('.infinite-scroll'));
         	}
 
     		$$('#myContent ul').append(lis);
+    		alert(5);
         } else {
+        	alert(3);
     		$$('#myContent').append(content);
     		myApp.attachInfiniteScroll($$('.infinite-scroll'));
+    		alert(5);
         }
 
         app.loading = false;
