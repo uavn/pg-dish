@@ -28,39 +28,55 @@
  
             <!-- Top Navbar. In Material theme it should be inside of the page-->
             <div class="navbar">
-              <div class="navbar-inner">
-                <div class="left">
-                    <a href="#" class="link icon-only open-panel"><i class="material-icons">menu</i></a>
-                </div>
-                
-                <div class="center">Рецепты</div>
+                <div class="navbar-inner">
+                    <div class="left">
+                        <a href="#" class="link icon-only open-panel"><i class="material-icons">menu</i></a>
+                    </div>
 
-                <div class="right">
+                    <div class="center">Рецепты</div>
+
+                    <div class="right">
+                    </div>
                 </div>
-              </div>
+
+                <div class="subnavbar" style="display: none;">
+                    <!-- Search Bar -->
+                    <form class="searchbar">
+                        <div class="searchbar-input">
+                            <input type="search" placeholder="Поиск">
+                            <a href="#" class="searchbar-clear"></a>
+                        </div>
+                        <a href="#" class="searchbar-cancel">Отмена</a>
+                    </form>
+                    
+                    <!-- Search Bar overlay-->
+                    <div class="searchbar-overlay"></div>
+                </div>
             </div>
 
+            
+
             <!-- Scrollable page content -->
-            <div class="page-content infinite-scroll" data-distance="100">
+            <div class="page-content hide-navbar-on-scroll infinite-scroll" data-distance="100">
                 <div class="content-block-title">Список</div>
                 <div class="" id="myContent"></div>
             </div>
  
             <div class="toolbar tabbar toolbar-bottom">
                 <div class="toolbar-inner art-tabs">
-                    <a href="#" class="tab-categories tab-link active">
+                    <a id="tab-cat" href="#myContent" class="tab-categories tab-link active">
                         <i class="material-icons">dashboard</i> Категории
                     </a>
 
-                    <a href="#" class="tab-nations tab-link">
+                    <a id="tab-nat" href="#myContent" class="tab-nations tab-link">
                         <i class="material-icons">language</i> Национальные
                     </a>
 
-                    <a href="#" class="tab-all tab-link">
+                    <a id="tab-all" href="#myContent" class="tab-all tab-link">
                         <i class="material-icons">find_in_page</i> Рецепты
                     </a>
 
-                    <a href="#" class="tab-fav tab-link">
+                    <a id="tab-fav" href="#myContent" class="tab-fav tab-link">
                         <i class="material-icons">bookmark_border</i> Избранные
                     </a>
                 </div>
@@ -147,7 +163,7 @@
             <ul>
                 {{#each categoies}}
                 <li>
-                    <a class="open-category item-link item-content" href="#" data-id="{{this.id}}">
+                    <a class="item-link item-content" href="#" data-id="{{this.id}}">
                         <div class="item-inner">
                             <div class="item-title-row">
                                 <div class="item-title">

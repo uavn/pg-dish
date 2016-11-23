@@ -23,6 +23,7 @@ var app = {
 	page: 1,
 	limit: 10,
 	categoryId: null,
+	nationId: null,
 
     init: function() {
     	$$(document).on('ajaxStart', function() {
@@ -34,6 +35,10 @@ var app = {
     	});
 
         $$('.tab-categories').click(function() {
+        	myApp.materialTabbarSetHighlight(
+        		$$('.tabbar.toolbar-bottom'),
+        		$$(this)
+    		);
             $$('.art-tabs .tab-link').removeClass('active');
             $$(this).addClass('active');
 
@@ -41,14 +46,46 @@ var app = {
         });
 
         $$('.tab-nations').click(function() {
+        	myApp.materialTabbarSetHighlight(
+        		$$('.tabbar.toolbar-bottom'),
+        		$$(this)
+    		);
             $$('.art-tabs .tab-link').removeClass('active');
             $$(this).addClass('active');
 
             app.loadNations();
         });
 
+        $$('.tab-all').click(function() {
+        	myApp.materialTabbarSetHighlight(
+        		$$('.tabbar.toolbar-bottom'),
+        		$$(this)
+    		);
+            $$('.art-tabs .tab-link').removeClass('active');
+            $$(this).addClass('active');
+
+            app.nationId = null;
+        	app.categoryId = null;
+
+        	$$('#myContent').html('');
+
+            app.loadRecepts(1);
+        });
+
         $$(document).on('click', '.open-category', function() {
+        	app.nationId = null;
+        	app.q = null;
         	app.categoryId = $$(this).data('id');
+
+        	$$('#myContent').html('');
+
+            app.loadRecepts(1);
+        });
+
+        $$(document).on('click', '.open-nation', function() {
+        	app.categoryId = null;
+        	app.q = null;
+        	app.nationId = $$(this).data('id');
 
         	$$('#myContent').html('');
 
@@ -65,10 +102,26 @@ var app = {
 			app.loadRecepts(app.page+1);
  		});
 
+ 		var mySearchbar = myApp.searchbar('.searchbar', {
+		    customSearch: true,
+		    onSearch: function(s) {
+		    	app.q = s.value;
+		    	
+		    	$$('#myContent').html('');
+		    	
+		    	app.loadRecepts(1);
+		    },
+		    onClear: function(s) {
+		    	app.q = null;
+		    	app.loadRecepts(1);
+		    }
+		});  
+
         this.loadCategories();
     },
 
     loadCategories: function() {
+    	$$('.subnavbar').hide();
     	myApp.detachInfiniteScroll($$('.infinite-scroll'));
 
         $$.ajax({
@@ -81,11 +134,15 @@ var app = {
                 $$('#myContent').html(compiledCategoriesTemplate({
                 	categoies: resp.category
                 }));
+
+                $$('#myContent').find('.item-link').addClass('open-category');
             }
         });
     },
 
     loadNations: function() {
+    	$$('.subnavbar').hide();
+
     	myApp.detachInfiniteScroll($$('.infinite-scroll'));
 
         $$.ajax({
@@ -98,22 +155,34 @@ var app = {
                 $$('#myContent').html(compiledCategoriesTemplate({
                 	categoies: resp.nationality
                 }));
+
+                $$('#myContent').find('.item-link').addClass('open-nation');
             }
         });
     },
 
     loadRecepts: function(page) {
+    	$$('.subnavbar').show();
+
     	if ( page <= 1 ) {
         	app.page = 1;
         } else {
         	app.page = page;
         }
 
+        var filter = 'id,gt,0';
+        if ( app.categoryId ) {
+        	filter = 'categoryId,eq,' + app.categoryId;
+        } else if ( app.nationId ) {
+        	filter = 'nationalityId,eq,' + app.nationId;
+        } else if ( app.q ) {
+        	filter = 'name,cs,' + app.q;
+        }
 
         $$.ajax({
             dataType: 'json',
             data: {
-                filter: 'categoryId,eq,' + app.categoryId,
+                filter: filter,
                 page: page + ',' + app.limit,
                 order: 'id,desc'
             },
