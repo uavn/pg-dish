@@ -255,8 +255,7 @@ var app = {
     			v.nationality = nationalities[d.nationalityId];
     		}
 
-
-			var recept = Object.assign(d, v);
+    		v.recept = d;
 
 			recepts.push(recept);
     	});
