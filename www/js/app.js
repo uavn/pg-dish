@@ -245,7 +245,9 @@ var app = {
     listRecepts: function(dishes, categories, nationalities) {
     	var recepts = [];
 
+    	alert(10);
     	$$.each(dishes, function(i, d) {
+    		alert(9);
     		var v = {};
     		if ( d.categoryId ) {
     			v.category = categories[d.categoryId];
@@ -257,7 +259,10 @@ var app = {
 
     		v.recept = d;
 
+    		alert(8);
+
 			recepts.push(recept);
+			alert(7);
     	});
 
     	alert(1);
