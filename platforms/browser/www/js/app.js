@@ -341,7 +341,7 @@ var app = {
 						dataType: 'json',
 						url: 'http://r.uartema.com/api/api.php/nationality/' + resp.nationalityId,
 						success: function (resp) {
-							$$('#nation-chip').html(resp.name).parents('.chip').css('display', 'inline-block');
+							$$('#nation-chip').html(resp.name + ' кухня').parents('.chip').css('display', 'inline-block');
 						}
 					});
 				}
