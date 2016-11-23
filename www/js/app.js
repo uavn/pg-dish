@@ -110,6 +110,8 @@ var app = {
 		    	$$('#myContent').html('');
 		    	
 		    	app.loadRecepts(1);
+
+		    	$$('.searchbar-overlay').hide();
 		    },
 		    onClear: function(s) {
 		    	app.q = null;
