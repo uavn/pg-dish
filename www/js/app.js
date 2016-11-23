@@ -179,6 +179,8 @@ var app = {
         	filter = 'name,cs,' + app.q;
         }
 
+        alert(1);
+
         $$.ajax({
             dataType: 'json',
             data: {
@@ -200,6 +202,7 @@ var app = {
                 });
 
                 if ( categoriesIds ) {
+                	alert(2);
 	                $$.ajax({
 			            dataType: 'json',
 			            data: {
@@ -213,6 +216,7 @@ var app = {
 			            	});
 
 			            	if ( nationIds ) {
+			            		alert(3);
 				            	$$.ajax({
 						            dataType: 'json',
 						            data: {
@@ -241,6 +245,7 @@ var app = {
     },
 
     listRecepts: function(dishes, categories, nationalities) {
+    	alert(4);
     	var recepts = [];
 
     	$$.each(dishes, function(i, d) {
