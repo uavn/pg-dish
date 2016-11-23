@@ -261,7 +261,7 @@ var app = {
 
     		alert(8);
 
-			recepts.push(recept);
+			recepts.push(v);
 			alert(7);
     	});
 
