@@ -53,7 +53,7 @@ var app = {
 
         $$.ajax({
             dataType: 'json',
-            url: 'http://r.uartema.com/api/api.php/category?transform=1&order=name',
+            url: 'http://r.uartema.com/api/api.php/category?transform=1&order=name&filter=cnt,gt,0',
             success: function( resp ) {
                 var categoriesTemplate = $$('script#categories').html();
                 var compiledCategoriesTemplate = Template7.compile(categoriesTemplate);
