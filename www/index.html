@@ -41,9 +41,9 @@
             </div>
 
             <!-- Scrollable page content -->
-            <div class="page-content">
-                <div class="content-block-title">Категории</div>
-                <div class="content-block" id="categoriesContent"></div>
+            <div class="page-content infinite-scroll" data-distance="100">
+                <div class="content-block-title">Список</div>
+                <div class="" id="myContent"></div>
             </div>
  
             <div class="toolbar tabbar toolbar-bottom">
@@ -71,73 +71,69 @@
          
             <!-- Left panel -->
             <div class="panel panel-left panel-cover">
-                <div class="content-block">
-                    <div class="list-block">
-                        <ul>
-                            <li>
-                                <div class="item-content">
-                                    <div class="item-inner">
-                                        <div class="item-title">
-                                            <a class="link" href="categories.html">Категории</a>
-                                        </div>
+                <div class="list-block">
+                    <ul>
+                        <li>
+                            <div class="item-content">
+                                <div class="item-inner">
+                                    <div class="item-title">
+                                        <a class="link" href="categories.html">Категории</a>
                                     </div>
                                 </div>
-                            </li>
+                            </div>
+                        </li>
 
-                            <li>
-                                <div class="item-content">
-                                    <div class="item-inner">
-                                        <div class="item-title">
-                                            <a class="link" href="categories.html">Национальные</a>
-                                        </div>
+                        <li>
+                            <div class="item-content">
+                                <div class="item-inner">
+                                    <div class="item-title">
+                                        <a class="link" href="categories.html">Национальные</a>
                                     </div>
                                 </div>
-                            </li>
+                            </div>
+                        </li>
 
-                            <li>
-                                <div class="item-content">
-                                    <div class="item-inner">
-                                        <div class="item-title">
-                                            <a class="link" href="list.html">Все рецепты</a>
-                                        </div>
+                        <li>
+                            <div class="item-content">
+                                <div class="item-inner">
+                                    <div class="item-title">
+                                        <a class="link" href="list.html">Все рецепты</a>
                                     </div>
                                 </div>
-                            </li>
+                            </div>
+                        </li>
 
-                            <li>
-                                <div class="item-content">
-                                    <div class="item-inner">
-                                        <div class="item-title">
-                                            <a class="link" href="list.html">История</a>
-                                        </div>
+                        <li>
+                            <div class="item-content">
+                                <div class="item-inner">
+                                    <div class="item-title">
+                                        <a class="link" href="list.html">История</a>
                                     </div>
                                 </div>
-                            </li>
+                            </div>
+                        </li>
 
-                            <li>
-                                <div class="item-content">
-                                    <div class="item-inner">
-                                        <div class="item-title">
-                                            <a class="link" href="list.html">Избранные</a>
-                                        </div>
+                        <li>
+                            <div class="item-content">
+                                <div class="item-inner">
+                                    <div class="item-title">
+                                        <a class="link" href="list.html">Избранные</a>
                                     </div>
                                 </div>
-                            </li>
+                            </div>
+                        </li>
 
 
-                            <li>
-                                <div class="item-content">
-                                    <div class="item-inner">
-                                        <div class="item-title">
-                                            <a href="#" class="close-panel">Закрыть</a>
-                                        </div>
+                        <li>
+                            <div class="item-content">
+                                <div class="item-inner">
+                                    <div class="item-title">
+                                        <a href="#" class="close-panel">Закрыть</a>
                                     </div>
                                 </div>
-                            </li>
-                        </ul>
-                    </div>
-                    
-                    
+                            </div>
+                        </li>
+                    </ul>
                 </div>
             </div>
           </div>
@@ -147,21 +143,23 @@
 
     <!-- Templates -->
     <script id="categories" type="text/template7">
-        <div class="list-block">
+        <div class="list-block media-list">
             <ul>
                 {{#each categoies}}
                 <li>
-                    <div class="item-content">
+                    <a class="open-category item-link item-content" href="#" data-id="{{this.id}}">
                         <div class="item-inner">
-                            <div class="item-title">
-                                <a class="open-category" href="#" data-id="{{this.id}}">{{this.name}}</a>
-                            </div>
+                            <div class="item-title-row">
+                                <div class="item-title">
+                                    {{this.name}}
+                                </div>
 
-                            <div class="item-after">
-                                {{this.cnt*1}}
+                                <div class="item-after">
+                                    {{this.cnt*1}}
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 </li>
                 {{/each}}
             </ul>
@@ -174,13 +172,19 @@
                 {{#each recepts}}
                 <li>
                     <a href="#" class="item-link item-content" data-id="{{this.id}}">
+                        <div class="item-media">
+                            <img src="http://r.uartema.com/photos/{{this.photo}}" width="80" />
+                        </div>
+
                         <div class="item-inner">
-                            <div class="_item-title-row">
-                                <img src="http://r.uartema.com/photos/{{this.photo}}" />
+                            <div class="item-title-row">
                                 <div class="item-title">{{this.name}}</div>
+                                <div class="item-after"><i class="material-icons">bookmark_border</i></div>
                             </div>
 
-                            <div class="item-subtitle">{{this.name}}</div>
+                            <div class="item-subtitle">
+                                {{#if this.category}}{{this.category.name}}{{/if}}{{#if this.nationality}}, {{this.nationality.name}} кухня{{/if}}
+                            </div>
                             <div class="item-text">{{this.description}}</div>
                         </div>
                     </a>

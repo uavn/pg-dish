@@ -1,19 +1,12 @@
 // Initialize app
 var myApp = new Framework7({
     // Default title for modals
-    modalTitle: 'My App',
+    modalTitle: 'Recepts',
  
     // If it is webapp, we can enable hash navigation:
     pushState: true,
- 
-    // Hide and show indicator during ajax requests
-    onAjaxStart: function (xhr) {
-        myApp.showIndicator();
-    },
 
-    onAjaxComplete: function (xhr) {
-        myApp.hideIndicator();
-    }
+    material: true
 });
 
 // If we need to use custom DOM library, let's save it to $$ variable:
@@ -26,7 +19,20 @@ var mainView = myApp.addView('.view-main', {
 });
 
 var app = {
+	loading: false,
+	page: 1,
+	limit: 10,
+	categoryId: null,
+
     init: function() {
+    	$$(document).on('ajaxStart', function() {
+    		myApp.showIndicator();
+    	});
+
+    	$$(document).on('ajaxComplete', function() {
+    		myApp.hideIndicator();
+    	});
+
         $$('.tab-categories').click(function() {
             $$('.art-tabs .tab-link').removeClass('active');
             $$(this).addClass('active');
@@ -42,14 +48,28 @@ var app = {
         });
 
         $$(document).on('click', '.open-category', function() {
-            app.loadRecepts($$(this).data('id'), 1);
+        	app.categoryId = $$(this).data('id');
+
+        	$$('#myContent').html('');
+
+            app.loadRecepts(1);
         });
+
+        $$('.infinite-scroll').on('infinite', function () {
+        	// Exit, if loading in progress
+			if (app.loading) return;
+
+			// Set loading flag
+			app.loading = true;
+
+			app.loadRecepts(app.page+1);
+ 		});
 
         this.loadCategories();
     },
 
     loadCategories: function() {
-        myApp.showIndicator();
+    	myApp.detachInfiniteScroll($$('.infinite-scroll'));
 
         $$.ajax({
             dataType: 'json',
@@ -57,15 +77,16 @@ var app = {
             success: function( resp ) {
                 var categoriesTemplate = $$('script#categories').html();
                 var compiledCategoriesTemplate = Template7.compile(categoriesTemplate);
-                $$('#categoriesContent').html(compiledCategoriesTemplate({categoies: resp.category}));
-
-                myApp.hideIndicator();
+                
+                $$('#myContent').html(compiledCategoriesTemplate({
+                	categoies: resp.category
+                }));
             }
         });
     },
 
     loadNations: function() {
-        myApp.showIndicator();
+    	myApp.detachInfiniteScroll($$('.infinite-scroll'));
 
         $$.ajax({
             dataType: 'json',
@@ -73,34 +94,121 @@ var app = {
             success: function( resp ) {
                 var categoriesTemplate = $$('script#categories').html();
                 var compiledCategoriesTemplate = Template7.compile(categoriesTemplate);
-                $$('#categoriesContent').html(compiledCategoriesTemplate({categoies: resp.nationality}));
-
-                myApp.hideIndicator();
+                
+                $$('#myContent').html(compiledCategoriesTemplate({
+                	categoies: resp.nationality
+                }));
             }
         });
     },
 
-    loadRecepts: function(categoryId, page) {
-        if ( page <= 1 ) page = 1;
+    loadRecepts: function(page) {
+    	if ( page <= 1 ) {
+        	app.page = 1;
+        } else {
+        	app.page = page;
+        }
 
-        myApp.showIndicator();
 
         $$.ajax({
             dataType: 'json',
             data: {
-                filter: 'categoryId,eq,'+categoryId,
-                page: page+',10',
+                filter: 'categoryId,eq,' + app.categoryId,
+                page: page + ',' + app.limit,
                 order: 'id,desc'
             },
             url: 'http://r.uartema.com/api/api.php/dish?transform=1',
             success: function( resp ) {
-                var receptsTemplate = $$('script#recepts').html();
-                var compiledReceptsTemplate = Template7.compile(receptsTemplate);
-                $$('#categoriesContent').html(compiledReceptsTemplate({recepts: resp.dish}));
+                var dishes = [];
 
-                myApp.hideIndicator();
+                var categoriesIds = [];
+                var nationIds = [];
+                $$.each(resp.dish, function(i, dish) {
+                	categoriesIds.push(dish.categoryId);
+                	if ( dish.nationalityId ) {
+                		nationIds.push(dish.nationalityId);
+                	}
+                });
+
+                if ( categoriesIds ) {
+	                $$.ajax({
+			            dataType: 'json',
+			            data: {
+			                filter: 'id,in,' + categoriesIds.join(',')
+			            },
+			            url: 'http://r.uartema.com/api/api.php/category?transform=1',
+			            success: function( cresp ) {
+			            	var categories = {};
+			            	$$.each(cresp.category, function(k, c) {
+			            		categories[c.id] = c;
+			            	});
+
+			            	if ( nationIds ) {
+				            	$$.ajax({
+						            dataType: 'json',
+						            data: {
+						                filter: 'id,in,' + nationIds.join(',')
+						            },
+						            url: 'http://r.uartema.com/api/api.php/nationality?transform=1',
+						            success: function( nresp ) {
+						            	var nationalities = {};
+						            	$$.each(nresp.nationality, function(k, n) {
+						            		nationalities[n.id] = n;
+						            	});
+
+						            	app.listRecepts(resp.dish, categories, nationalities);
+						            }
+						        });
+				            } else {
+				            	app.listRecepts(resp.dish, categories);
+				            }
+			            }
+			        });
+		        } else {
+		        	app.listRecepts(resp.dish);
+		        }
             }
         });
+    },
+
+    listRecepts: function(dishes, categories, nationalities) {
+    	var recepts = [];
+
+    	$$.each(dishes, function(i, d) {
+    		var v = {};
+    		if ( d.categoryId ) {
+    			v.category = categories[d.categoryId];
+    		}
+
+    		if ( d.nationalityId ) {
+    			v.nationality = nationalities[d.nationalityId];
+    		}
+
+
+			var recept = Object.assign(d, v);
+
+			recepts.push(recept);
+    	});
+
+    	var receptsTemplate = $$('script#recepts').html();
+        var compiledReceptsTemplate = Template7.compile(receptsTemplate);
+        var content = compiledReceptsTemplate({
+        	recepts: recepts
+        });
+
+        if ( $$('#myContent').find('.list-block').length ) {
+        	var lis = $$(content).find('li');
+        	if ( !lis.length ) {
+				myApp.detachInfiniteScroll($$('.infinite-scroll'));
+        	}
+
+    		$$('#myContent ul').append(lis);
+        } else {
+    		$$('#myContent').append(content);
+    		myApp.attachInfiniteScroll($$('.infinite-scroll'));
+        }
+
+        app.loading = false;
     }
 };
 
