@@ -121,7 +121,7 @@ var app = {
     },
 
     loadCategories: function() {
-    	$$('.subnavbar').hide();
+    	// $$('.subnavbar').hide();
     	myApp.detachInfiniteScroll($$('.infinite-scroll'));
 
         $$.ajax({
@@ -141,7 +141,7 @@ var app = {
     },
 
     loadNations: function() {
-    	$$('.subnavbar').hide();
+    	// $$('.subnavbar').hide();
 
     	myApp.detachInfiniteScroll($$('.infinite-scroll'));
 
@@ -162,7 +162,7 @@ var app = {
     },
 
     loadRecepts: function(page) {
-    	$$('.subnavbar').show();
+    	// $$('.subnavbar').show();
 
     	if ( page <= 1 ) {
         	app.page = 1;
