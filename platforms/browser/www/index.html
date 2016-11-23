@@ -169,20 +169,18 @@
     </script>
 
     <script id="recepts" type="text/template7">
-        <div class="list-block">
+        <div class="list-block media-list">
             <ul>
                 {{#each recepts}}
                 <li>
                     <a href="#" class="item-link item-content" data-id="{{this.id}}">
-                        <div class="item-media">
-                            <img src="http://r.uartema.com/photos/{{this.photo}}" width="80"/>
-                        </div>
-
                         <div class="item-inner">
                             <div class="item-title-row">
+                                <img src="http://r.uartema.com/photos/{{this.photo}}" />
                                 <div class="item-title">{{this.name}}</div>
-                                <div class="item-after">{{this.description}}</div>
                             </div>
+                            <div class="item-subtitle">New messages from John Doe</div>
+                            <div class="item-text">{{this.description}}</div>
                         </div>
                     </a>
                 </li>
