@@ -25,6 +25,10 @@ var app = {
 	categoryId: null,
 	nationId: null,
 
+	ajax1Id: null,
+	ajax2Id: null,
+	ajax3Id: null,
+
     init: function() {
     	$$(document).on('ajaxStart', function() {
     		myApp.showIndicator();
@@ -110,6 +114,8 @@ var app = {
 		    	$$('#myContent').html('');
 		    	
 		    	app.loadRecepts(1);
+
+		    	$$('.searchbar-overlay').hide();
 		    },
 		    onClear: function(s) {
 		    	app.q = null;
@@ -164,27 +170,46 @@ var app = {
     loadRecepts: function(page) {
     	// $$('.subnavbar').show();
 
+		// Kill old ajaxs
+		if ( app.ajax1Id ) {
+			app.ajax1Id.abort();
+		}
+
+		if ( app.ajax2Id ) {
+			app.ajax2Id.abort();
+		}
+
+		if ( app.ajax3Id ) {
+			app.ajax3Id.abort();
+		}
+
+		// Params
     	if ( page <= 1 ) {
         	app.page = 1;
         } else {
         	app.page = page;
         }
 
-        var filter = 'id,gt,0';
-        if ( app.categoryId ) {
-        	filter = 'categoryId,eq,' + app.categoryId;
-        } else if ( app.nationId ) {
-        	filter = 'nationalityId,eq,' + app.nationId;
-        } else if ( app.q ) {
-        	filter = 'name,cs,' + app.q;
+        // Filters
+        var filters = [];
+
+		if ( app.categoryId ) {
+        	filters.push('categoryId,eq,' + app.categoryId);
         }
 
-        
+        if ( app.nationId ) {
+			filters.push('nationalityId,eq,' + app.nationId);
+        }
 
-        $$.ajax({
+        if ( app.q ) {
+			filters.push('name,cs,' + app.q);
+        }
+		// /Filters
+
+        app.ajax1Id = $$.ajax({
             dataType: 'json',
             data: {
-                filter: filter,
+                filter: filters,
                 page: page + ',' + app.limit,
                 order: 'id,desc'
             },
@@ -202,7 +227,7 @@ var app = {
                 });
 
                 if ( categoriesIds ) {
-	                $$.ajax({
+					app.ajax2Id = $$.ajax({
 			            dataType: 'json',
 			            data: {
 			                filter: 'id,in,' + categoriesIds.join(',')
@@ -215,7 +240,7 @@ var app = {
 			            	});
 
 			            	if ( nationIds ) {
-				            	$$.ajax({
+								app.ajax3Id = $$.ajax({
 						            dataType: 'json',
 						            data: {
 						                filter: 'id,in,' + nationIds.join(',')
