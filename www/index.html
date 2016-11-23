@@ -58,7 +58,7 @@
 
             <!-- Scrollable page content -->
             <div class="page-content _hide-navbar-on-scroll infinite-scroll" data-distance="100">
-                <div class="content-block-title">Список</div>
+                <!--<div class="content-block-title">Список</div>-->
                 <div class="" id="myContent"></div>
             </div>
  
@@ -187,7 +187,7 @@
             <ul>
                 {{#each recepts}}
                 <li>
-                    <a href="#" class="item-link item-content" data-id="{{this.recept.id}}">
+                    <a href="#" class="recept-link item-link item-content" data-id="{{this.recept.id}}">
                         <div class="item-media">
                             <img src="http://r.uartema.com/photos/{{this.recept.photo}}" width="80" />
                         </div>
@@ -200,6 +200,7 @@
                             <div class="item-subtitle">
                                 {{#if this.category}}{{this.category.name}}{{/if}}{{#if this.nationality}}, {{this.nationality.name}} кухня{{/if}}
                             </div>
+
                             <div class="item-text">{{this.recept.description}}</div>
                         </div>
                     </a>
@@ -207,6 +208,34 @@
                 {{/each}}
             </ul>
         </div>
+    </script>
+
+    <script id="recept" type="text/template7">
+        <div class="content-block-title">{{recept.name}} (время приготовления: {{recept.minut}}, {{recept.portion}} порций)</div>
+
+        <div class="content-block">
+            <div class="chip" style="display: none">
+                <div class="chip-label" id="category-chip"></div>
+            </div>
+
+            <div class="chip" style="display: none">
+                <div class="chip-label" id="nation-chip"></div>
+            </div>
+
+            <div class="chip" style="display: none">
+                <div class="chip-label" id="type-chip"></div>
+            </div>
+        </div>
+
+        <div class="content-block">
+            <img src="http://r.uartema.com/photos/{{recept.photo}}"/>
+        </div>
+
+        {{#if recept.description}}
+            <div class="content-block">
+                <div class="content-block-inner">{{recept.description}}</div>
+            </div>
+        {{/if}}
     </script>
     <!-- /Templates -->
 

@@ -106,6 +106,12 @@ var app = {
 			app.loadRecepts(app.page+1);
  		});
 
+		$$(document).on('click', '.recept-link', function() {
+			var id = $$(this).data('id');
+
+			app.loadRecept(id);
+		});
+
  		var mySearchbar = myApp.searchbar('.searchbar', {
 		    customSearch: true,
 		    onSearch: function(s) {
@@ -268,6 +274,8 @@ var app = {
     },
 
     listRecepts: function(dishes, categories, nationalities) {
+		myApp.detachInfiniteScroll($$('.infinite-scroll'));
+
     	var recepts = [];
 
     	$$.each(dishes, function(i, d) {
@@ -304,7 +312,55 @@ var app = {
         }
 
         app.loading = false;
-    }
+    },
+
+	loadRecept: function(id) {
+		$$.ajax({
+			dataType: 'json',
+			url: 'http://r.uartema.com/api/api.php/dish/' + id,
+			success: function( resp ) {
+				var receptTemplate = $$('script#recept').html();
+				var compiledReceptTemplate = Template7.compile(receptTemplate);
+
+				$$('#myContent').html(compiledReceptTemplate({
+					recept: resp
+				}));
+
+				if ( resp.categoryId ) {
+					$$.ajax({
+						dataType: 'json',
+						url: 'http://r.uartema.com/api/api.php/category/' + resp.categoryId,
+						success: function (resp) {
+							$$('#category-chip').html(resp.name).parents('.chip').show();
+						}
+					});
+				}
+
+				if ( resp.nationalityId ) {
+					$$.ajax({
+						dataType: 'json',
+						url: 'http://r.uartema.com/api/api.php/nationality/' + resp.nationalityId,
+						success: function (resp) {
+							$$('#nation-chip').html(resp.name).parents('.chip').show();
+						}
+					});
+				}
+
+				if ( resp.typeId ) {
+					$$.ajax({
+						dataType: 'json',
+						url: 'http://r.uartema.com/api/api.php/type/' + resp.typeId,
+						success: function (resp) {
+							$$('#type-chip').html(resp.name).parents('.chip').show();
+						}
+					});
+				}
+
+
+			}
+		});
+
+	}
 };
 
 app.init();
