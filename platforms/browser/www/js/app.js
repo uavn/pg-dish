@@ -179,6 +179,8 @@ var app = {
         	filter = 'name,cs,' + app.q;
         }
 
+        
+
         $$.ajax({
             dataType: 'json',
             data: {
@@ -253,10 +255,9 @@ var app = {
     			v.nationality = nationalities[d.nationalityId];
     		}
 
+    		v.recept = d;
 
-			var recept = Object.assign(d, v);
-
-			recepts.push(recept);
+			recepts.push(v);
     	});
 
     	var receptsTemplate = $$('script#recepts').html();
