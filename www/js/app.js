@@ -24,6 +24,7 @@ var app = {
 	limit: 20,
 	categoryId: null,
 	nationId: null,
+	randomize: false,
 
 	ajax1Id: null,
 	ajax2Id: null,
@@ -101,7 +102,8 @@ var app = {
 
         	$$('#title').html('Все рецепты');
 
-            app.loadRecepts();
+            app.randomize = true;
+	        app.loadRecepts();
         });
 
         $$(document).on('click', '.open-category', function() {
@@ -115,6 +117,7 @@ var app = {
 
         	$$('#title').html('Рецепты в категории');
 
+        	app.randomize = false;
             app.loadRecepts();
         });
 
@@ -129,6 +132,7 @@ var app = {
 
         	$$('#title').html('Национальные рецепты');
 
+        	app.randomize = false;
             app.loadRecepts();
         });
 
@@ -143,6 +147,7 @@ var app = {
 
         	$$('#title').html('Типы');
 
+        	app.randomize = false;
             app.loadRecepts();
         });
 
@@ -176,6 +181,7 @@ var app = {
 		    	
 		    	$$('#myContent').html('');
 		    	
+		    	app.randomize = false;
 		    	app.loadRecepts();
 
 		    	$$('.searchbar-overlay').hide();
@@ -190,6 +196,7 @@ var app = {
 		    }
 		});  
 
+ 		app.randomize = true;
         app.loadRecepts();
     },
 
@@ -295,13 +302,13 @@ var app = {
 			filters.push('name,cs,' + app.q);
         }
 		// /Filters
-
+alert(app.randomize);
         app.ajax1Id = $$.ajax({
             dataType: 'json',
             data: {
                 filter: filters,
-                page: app.page + ',' + app.limit,
-                order: 'id,desc'
+                page: (app.randomize ? '1,' + app.limit : app.page + ',' + app.limit),
+                order: (app.randomize ? 'rand' : 'id,desc')
             },
             url: 'http://r.uartema.com/api/api.php/dish?transform=1',
             success: function( resp ) {
