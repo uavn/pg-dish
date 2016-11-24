@@ -25,6 +25,7 @@ var app = {
 	categoryId: null,
 	nationId: null,
 	randomize: false,
+	loadIds: null,
 
 	ajax1Id: null,
 	ajax2Id: null,
@@ -150,6 +151,21 @@ var app = {
         	app.randomize = false;
             app.loadRecepts();
         });
+
+        $$(document).on('click', '.tab-history', function() {
+			var storage = window.localStorage;
+
+			var history = storage.getItem('history');
+			if ( history ) {
+				app.loadIds = history;
+				app.loadRecepts();
+				app.loadIds = [];
+			} else {
+				myApp.alert('История пустая');
+			}
+        });
+
+
 
         $$('.infinite-scroll').on('infinite', function () {
         	// Exit, if loading in progress
@@ -286,21 +302,25 @@ var app = {
         // Filters
         var filters = [];
 
-		if ( app.categoryId ) {
-        	filters.push('categoryId,eq,' + app.categoryId);
-        }
+		if ( app.loadIds ) {
+			filters.push('in,in,' + app.loadIds);
+		} else {
+			if (app.categoryId) {
+				filters.push('categoryId,eq,' + app.categoryId);
+			}
 
-        if ( app.nationId ) {
-			filters.push('nationalityId,eq,' + app.nationId);
-        }
+			if (app.nationId) {
+				filters.push('nationalityId,eq,' + app.nationId);
+			}
 
-        if ( app.typeId ) {
-			filters.push('typeId,eq,' + app.typeId);
-        }
+			if (app.typeId) {
+				filters.push('typeId,eq,' + app.typeId);
+			}
 
-        if ( app.q ) {
-			filters.push('name,cs,' + app.q);
-        }
+			if (app.q) {
+				filters.push('name,cs,' + app.q);
+			}
+		}
 		// /Filters
 
         app.ajax1Id = $$.ajax({
@@ -405,6 +425,23 @@ var app = {
 
 	loadRecept: function(id) {
 		// myApp.detachInfiniteScroll($$('.infinite-scroll'));
+
+		// Save to history
+		var storage = window.localStorage;
+
+		var history = storage.getItem('history');
+		if ( !history ) {
+			history = [];
+		} else {
+			history = JSON.parse(history);
+		}
+		// Limit history
+		if ( history.length >= 30 ) {
+			history.shift();
+		}
+		history.push(id);
+
+		storage.setItem('history', JSON.stringify(history));
 
 		$$.ajax({
 			dataType: 'json',
