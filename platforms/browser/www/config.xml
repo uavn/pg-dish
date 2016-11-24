@@ -6,9 +6,9 @@
     <feature name="Device">
         <param name="browser-package" value="Device" />
     </feature>
-    <name>Dish</name>
+    <name>Рецепты</name>
     <description>
-        Dish description
+        Каталог рецептов разбитый по типам, категориям и национальным кухням.
     </description>
     <author email="artem@uartema.com" href="http://uartema.com">
         UArtema Software

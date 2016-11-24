@@ -162,6 +162,10 @@ var app = {
 			app.loadRecept(id);
 		});
 
+		$$(document).on('click', '.chip', function() {
+			myApp.closeModal('.popup-recept');
+		});
+
  		var mySearchbar = myApp.searchbar('.searchbar', {
 		    customSearch: true,
 		    onSearch: function(s) {
@@ -247,8 +251,8 @@ var app = {
     },
 
     loadRecepts: function(page) {
-    	myApp.closeModal('.popup-recept');
-    	
+    	// myApp.closeModal('.popup-recept');
+
 		// Kill old ajaxs
 		if ( app.ajax1Id ) {
 			app.ajax1Id.abort();
