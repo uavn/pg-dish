@@ -247,8 +247,8 @@ var app = {
     },
 
     loadRecepts: function(page) {
-    	// $$('.subnavbar').show();
-
+    	myApp.closeModal('.popup-recept');
+    	
 		// Kill old ajaxs
 		if ( app.ajax1Id ) {
 			app.ajax1Id.abort();
