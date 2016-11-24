@@ -76,68 +76,67 @@
             <div class="panel-overlay"></div>
          
             <!-- Left panel -->
-            <div class="panel panel-left panel-cover">
-                <div class="list-block">
+            <div class="panel panel-left panel-cover layout-dark">
+                <div class="list-block media-list">
                     <ul>
                         <li>
-                            <div class="item-content">
+                            <a href="#" class="tab-categories item-link item-content">
                                 <div class="item-inner">
-                                    <div class="item-title">
-                                        <a class="link" href="#">Категории</a>
-                                    </div>
+                                  <div class="item-title-row">
+                                    <div class="item-title">Категории</div>
+                                  </div>
                                 </div>
-                            </div>
+                            </a>
                         </li>
 
                         <li>
-                            <div class="item-content">
+                            <a href="#" class="tab-types item-link item-content">
                                 <div class="item-inner">
-                                    <div class="item-title">
-                                        <a class="link" href="#">Национальные</a>
-                                    </div>
+                                  <div class="item-title-row">
+                                    <div class="item-title">Типы блюд</div>
+                                  </div>
                                 </div>
-                            </div>
+                            </a>
                         </li>
 
                         <li>
-                            <div class="item-content">
+                            <a href="#" class="tab-nations item-link item-content">
                                 <div class="item-inner">
-                                    <div class="item-title">
-                                        <a class="link" href="#">Все рецепты</a>
-                                    </div>
+                                  <div class="item-title-row">
+                                    <div class="item-title">Национальная кухня</div>
+                                  </div>
                                 </div>
-                            </div>
+                            </a>
                         </li>
 
                         <li>
-                            <div class="item-content">
+                            <a href="#" class="tab-all item-link item-content">
                                 <div class="item-inner">
-                                    <div class="item-title">
-                                        <a class="link" href="#">История</a>
-                                    </div>
+                                  <div class="item-title-row">
+                                    <div class="item-title">Все рецепты</div>
+                                  </div>
                                 </div>
-                            </div>
+                            </a>
                         </li>
 
                         <li>
-                            <div class="item-content">
+                            <a href="#" class="tab-history item-link item-content">
                                 <div class="item-inner">
-                                    <div class="item-title">
-                                        <a class="link" href="#">Избранные</a>
-                                    </div>
+                                  <div class="item-title-row">
+                                    <div class="item-title">История</div>
+                                  </div>
                                 </div>
-                            </div>
+                            </a>
                         </li>
 
-
                         <li>
-                            <div class="item-content">
+                            <a href="#" class="tab-fav item-link item-content">
                                 <div class="item-inner">
-                                    <div class="item-title">
-                                        <a href="#" class="close-panel">Закрыть</a>
-                                    </div>
+                                  <div class="item-title-row">
+                                    <div class="item-title">Избранные</div>
+                                  </div>
                                 </div>
-                            </div>
+                            </a>
                         </li>
                     </ul>
                 </div>
@@ -201,7 +200,21 @@
     </script>
 
     <script id="recept" type="text/template7">
-        <div class="content-block-title">время приготовления: {{recept.minut}}, {{recept.portion}} порций</div>
+        <div class="content-block">
+            <p>
+                <h1 class="recept-title">Рецепт</h1>
+            </p>
+
+            <div class="">время приготовления: {{recept.minut}}, {{recept.portion}} порций</div>
+
+            <p>
+                <a href="#" class="close-popup"><i class="material-icons">close</i></a>
+
+                <a href="#" class="fav-recept"><i class="material-icons">bookmark_border</i></a>
+            </p>
+        </div>
+
+        
 
         <div class="content-block">
             <a href="#" class="chip open-category" id="category-chip" style="display: none">
@@ -255,6 +268,9 @@
         {{/each}}
     </script>
     <!-- /Templates -->
+
+    <!-- Popup -->
+    <div class="popup popup-recept"></div>
 
     <script type="text/javascript" src="cordova.js"></script>
     <!-- Path to Framework7 Library JS-->

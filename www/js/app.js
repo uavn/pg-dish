@@ -39,6 +39,8 @@ var app = {
     	});
 
         $$('.tab-categories').click(function() {
+        	myApp.closePanel();
+
         	myApp.materialTabbarSetHighlight(
         		$$('.tabbar.toolbar-bottom'),
         		$$(this)
@@ -52,6 +54,8 @@ var app = {
         });
 
         $$('.tab-nations').click(function() {
+        	myApp.closePanel();
+
         	myApp.materialTabbarSetHighlight(
         		$$('.tabbar.toolbar-bottom'),
         		$$(this)
@@ -65,6 +69,8 @@ var app = {
         });
 
         $$('.tab-types').click(function() {
+        	myApp.closePanel();
+
         	myApp.materialTabbarSetHighlight(
         		$$('.tabbar.toolbar-bottom'),
         		$$(this)
@@ -78,6 +84,8 @@ var app = {
         });
 
         $$('.tab-all').click(function() {
+        	myApp.closePanel();
+
         	myApp.materialTabbarSetHighlight(
         		$$('.tabbar.toolbar-bottom'),
         		$$(this)
@@ -382,22 +390,25 @@ var app = {
     },
 
 	loadRecept: function(id) {
-		myApp.detachInfiniteScroll($$('.infinite-scroll'));
+		// myApp.detachInfiniteScroll($$('.infinite-scroll'));
 
 		$$.ajax({
 			dataType: 'json',
 			url: 'http://r.uartema.com/api/api.php/dish/' + id,
 			success: function( resp ) {
-				$$('#title').html(resp.name);
 				if ( !resp.description.trim() ) {
 					resp.description = null;
 				}
 				var receptTemplate = $$('script#recept').html();
 				var compiledReceptTemplate = Template7.compile(receptTemplate);
 
-				$$('#myContent').html(compiledReceptTemplate({
+				$$('.popup-recept').html(compiledReceptTemplate({
 					recept: resp
 				}));
+
+				$$('.recept-title').html(resp.name);
+
+				myApp.popup('.popup-recept');
 
 				if ( resp.categoryId ) {
 					$$.ajax({
@@ -517,7 +528,6 @@ var app = {
 					},
 					url: 'http://r.uartema.com/api/api.php/step?transform=1&order=index',
 					success: function (resp) {
-						console.log(resp);
 						var stepsTemplate = $$('script#stepstpl').html();
 						var compiledStepsTemplate = Template7.compile(stepsTemplate);
 
