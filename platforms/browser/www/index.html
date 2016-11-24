@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
-    <title>My App</title>
+    <title>Рецепты</title>
 
     <link href="material-icons/material-icons.css" rel="stylesheet"/>
 
@@ -33,28 +33,24 @@
                         <a href="#" class="link icon-only open-panel"><i class="material-icons">menu</i></a>
                     </div>
 
-                    <div class="center">Рецепты</div>
+                    <div class="center" id="title">Рецепты</div>
 
                     <div class="right">
                     </div>
                 </div>
             </div>
-                <!-- <div class="subnavbar" _style="display: none;"> -->
-                    <!-- Search Bar -->
-                    <form class="searchbar">
-                        <div class="searchbar-input">
-                            <input type="search" placeholder="Поиск">
-                            <a href="#" class="searchbar-clear"></a>
-                        </div>
-                        <a href="#" class="searchbar-cancel">Отмена</a>
-                    </form>
-                    
-                    <!-- Search Bar overlay-->
-                    <div class="searchbar-overlay"></div>
-                <!-- </div> -->
-            
 
+            <form class="searchbar">
+                <div class="searchbar-input">
+                    <input type="search" placeholder="Поиск">
+                    <a href="#" class="searchbar-clear"></a>
+                </div>
+                <a href="#" class="searchbar-cancel">Отмена</a>
+            </form>
             
+            <!-- Search Bar overlay-->
+            <div class="searchbar-overlay"></div>
+
 
             <!-- Scrollable page content -->
             <div class="page-content _hide-navbar-on-scroll infinite-scroll" data-distance="100">
@@ -64,21 +60,15 @@
  
             <div class="toolbar tabbar toolbar-bottom">
                 <div class="toolbar-inner art-tabs">
-                    <a id="tab-cat" href="#myContent" class="tab-categories tab-link active">
-                        <i class="material-icons">dashboard</i>
-                    </a>
+                    <a id="tab-cat" href="#myContent" class="tab-categories tab-link active"><i class="material-icons">home</i></a>
 
-                    <a id="tab-nat" href="#myContent" class="tab-nations tab-link">
-                        <i class="material-icons">language</i>
-                    </a>
+                    <a id="tab-types" href="#myContent" class="tab-types tab-link"><i class="material-icons">shopping_cart</i></a>
 
-                    <a id="tab-all" href="#myContent" class="tab-all tab-link">
-                        <i class="material-icons">find_in_page</i>
-                    </a>
+                    <a id="tab-nat" href="#myContent" class="tab-nations tab-link"><i class="material-icons">language</i></a>
 
-                    <a id="tab-fav" href="#myContent" class="tab-fav tab-link">
-                        <i class="material-icons">bookmark_border</i>
-                    </a>
+                    <a id="tab-all" href="#myContent" class="tab-all tab-link"><i class="material-icons">receipt</i></a>
+
+                    <a id="tab-fav" href="#myContent" class="tab-fav tab-link"><i class="material-icons">turned_in</i></a>
                 </div>
             </div>
 
@@ -211,24 +201,24 @@
     </script>
 
     <script id="recept" type="text/template7">
-        <div class="content-block-title">{{recept.name}} (время приготовления: {{recept.minut}}, {{recept.portion}} порций)</div>
+        <div class="content-block-title">время приготовления: {{recept.minut}}, {{recept.portion}} порций</div>
 
         <div class="content-block">
-            <div class="chip" style="display: none">
-                <a href="#" class="chip-label" id="category-chip"></a>
-            </div>
+            <a href="#" class="chip open-category" id="category-chip" style="display: none">
+                <span class="chip-label"></span>
+            </a>
 
-            <div class="chip" style="display: none">
-                <a href="#" class="chip-label" id="nation-chip"></a>
-            </div>
+            <a href="#" class="chip open-nation" id="nation-chip" style="display: none">
+                <span class="chip-label"></span>
+            </a>
 
-            <div class="chip" style="display: none">
-                <a href="#" class="chip-label" id="type-chip"></a>
-            </div>
+            <a href="#" class="chip open-type" id="type-chip" style="display: none">
+                <span class="chip-label"></span>
+            </a>
         </div>
 
         <div class="content-block">
-            <img src="http://r.uartema.com/photos/{{recept.photo}}"/>
+            <img src="http://r.uartema.com/photos/{{recept.photo}}" style="width: 100%" />
         </div>
 
         {{#if recept.description}}
@@ -236,6 +226,33 @@
                 <div class="content-block-inner">{{recept.description}}</div>
             </div>
         {{/if}}
+
+        <div class="content-block-title ingr-rel">Ингридиенты</div>
+        <div class="content-block inset ingr-rel"><div class="content-block-inner" id="ingrs"></div></div>
+
+        <div class="content-block-title">Пошаговая инструкция</div>
+        <div class="content-block inset"><div class="content-block-inner" id="steps"></div></div>
+    </script>
+
+    <script id="ingrstpl" type="text/template7">
+        {{#each ingrds}}
+        <p>
+            {{this.ing.name}} ({{this.di.cnt}}{{this.di.measure}}{{#if this.di.prim}}, {{this.di.prim}}{{/if}})
+        </p>
+        {{/each}}
+    </script>
+
+    <script id="stepstpl" type="text/template7">
+        {{#each steps}}
+        <p>
+            {{@index+1}}:
+            {{#if this.photo}}
+            <img src="http://r.uartema.com/photos/{{this.photo}}" style="width: 100%">
+            {{/if}}
+
+            {{this.text}}
+        </p>
+        {{/each}}
     </script>
     <!-- /Templates -->
 

@@ -46,6 +46,8 @@ var app = {
             $$('.art-tabs .tab-link').removeClass('active');
             $$(this).addClass('active');
 
+            $$('#title').html('Категории');
+
             app.loadCategories();
         });
 
@@ -57,7 +59,22 @@ var app = {
             $$('.art-tabs .tab-link').removeClass('active');
             $$(this).addClass('active');
 
+            $$('#title').html('Национальная кухня');
+
             app.loadNations();
+        });
+
+        $$('.tab-types').click(function() {
+        	myApp.materialTabbarSetHighlight(
+        		$$('.tabbar.toolbar-bottom'),
+        		$$(this)
+    		);
+            $$('.art-tabs .tab-link').removeClass('active');
+            $$(this).addClass('active');
+
+            $$('#title').html('Типы');
+
+            app.loadTypes();
         });
 
         $$('.tab-all').click(function() {
@@ -70,28 +87,53 @@ var app = {
 
             app.nationId = null;
         	app.categoryId = null;
+        	app.typeId = null;
 
         	$$('#myContent').html('');
+
+        	$$('#title').html('Все рецепты');
 
             app.loadRecepts(1);
         });
 
         $$(document).on('click', '.open-category', function() {
         	app.nationId = null;
+        	app.typeId = null;
         	app.q = null;
+        	$$('input[type=search]').val('');
         	app.categoryId = $$(this).data('id');
 
         	$$('#myContent').html('');
+
+        	$$('#title').html('Рецепты в категории');
 
             app.loadRecepts(1);
         });
 
         $$(document).on('click', '.open-nation', function() {
         	app.categoryId = null;
+        	app.typeId = null;
         	app.q = null;
+        	$$('input[type=search]').val('');
         	app.nationId = $$(this).data('id');
 
         	$$('#myContent').html('');
+
+        	$$('#title').html('Национальные рецепты');
+
+            app.loadRecepts(1);
+        });
+
+        $$(document).on('click', '.open-type', function() {
+        	app.categoryId = null;
+        	app.q = null;
+        	$$('input[type=search]').val('');
+        	app.nationId = null;
+        	app.typeId = $$(this).data('id');
+
+        	$$('#myContent').html('');
+
+        	$$('#title').html('Типы');
 
             app.loadRecepts(1);
         });
@@ -122,10 +164,14 @@ var app = {
 		    	app.loadRecepts(1);
 
 		    	$$('.searchbar-overlay').hide();
+
+		    	$$('#title').html(app.q);
 		    },
 		    onClear: function(s) {
 		    	app.q = null;
 		    	app.loadRecepts(1);
+
+		    	$$('#title').html('Все рецепты');
 		    }
 		});  
 
@@ -173,6 +219,25 @@ var app = {
         });
     },
 
+    loadTypes: function() {
+    	myApp.detachInfiniteScroll($$('.infinite-scroll'));
+
+        $$.ajax({
+            dataType: 'json',
+            url: 'http://r.uartema.com/api/api.php/type?transform=1&order=name',
+            success: function( resp ) {
+                var categoriesTemplate = $$('script#categories').html();
+                var compiledCategoriesTemplate = Template7.compile(categoriesTemplate);
+                
+                $$('#myContent').html(compiledCategoriesTemplate({
+                	categoies: resp.type
+                }));
+
+                $$('#myContent').find('.item-link').addClass('open-type');
+            }
+        });
+    },
+
     loadRecepts: function(page) {
     	// $$('.subnavbar').show();
 
@@ -205,6 +270,10 @@ var app = {
 
         if ( app.nationId ) {
 			filters.push('nationalityId,eq,' + app.nationId);
+        }
+
+        if ( app.typeId ) {
+			filters.push('typeId,eq,' + app.typeId);
         }
 
         if ( app.q ) {
@@ -274,9 +343,7 @@ var app = {
     },
 
     listRecepts: function(dishes, categories, nationalities) {
-		myApp.detachInfiniteScroll($$('.infinite-scroll'));
-
-    	var recepts = [];
+		var recepts = [];
 
     	$$.each(dishes, function(i, d) {
     		var v = {};
@@ -315,10 +382,16 @@ var app = {
     },
 
 	loadRecept: function(id) {
+		myApp.detachInfiniteScroll($$('.infinite-scroll'));
+
 		$$.ajax({
 			dataType: 'json',
 			url: 'http://r.uartema.com/api/api.php/dish/' + id,
 			success: function( resp ) {
+				$$('#title').html(resp.name);
+				if ( !resp.description.trim() ) {
+					resp.description = null;
+				}
 				var receptTemplate = $$('script#recept').html();
 				var compiledReceptTemplate = Template7.compile(receptTemplate);
 
@@ -331,7 +404,9 @@ var app = {
 						dataType: 'json',
 						url: 'http://r.uartema.com/api/api.php/category/' + resp.categoryId,
 						success: function (resp) {
-							$$('#category-chip').html(resp.name).parents('.chip').css('display', 'inline-block');
+							$$('#category-chip span').html(resp.name);
+							$$('#category-chip').css('display', 'inline-block');
+							$$('#category-chip').data('id', resp.id);
 						}
 					});
 				}
@@ -341,7 +416,9 @@ var app = {
 						dataType: 'json',
 						url: 'http://r.uartema.com/api/api.php/nationality/' + resp.nationalityId,
 						success: function (resp) {
-							$$('#nation-chip').html(resp.name + ' кухня').parents('.chip').css('display', 'inline-block');
+							$$('#nation-chip span').html(resp.name);
+							$$('#nation-chip').css('display', 'inline-block');
+							$$('#nation-chip').data('id', resp.id);
 						}
 					});
 				}
@@ -351,10 +428,105 @@ var app = {
 						dataType: 'json',
 						url: 'http://r.uartema.com/api/api.php/type/' + resp.typeId,
 						success: function (resp) {
-							$$('#type-chip').html(resp.name).parents('.chip').css('display', 'inline-block');
+							$$('#type-chip span').html(resp.name);
+							$$('#type-chip').css('display', 'inline-block');
+							$$('#type-chip').data('id', resp.id);
 						}
 					});
 				}
+
+				// Ingridients
+				$$.ajax({
+					dataType: 'json',
+					data: {
+						filter: 'dishId,eq,'+id
+					},
+					url: 'http://r.uartema.com/api/api.php/dish_ingredient?transform=1',
+					success: function (resp) {
+						var measures = {
+						  '': "г",
+						  0: "",
+						  1: "г",
+						  2: "кг",
+						  3: "л",
+						  4: "мл",
+						  5: "ст.л.",
+						  6: "ч.л.",
+						  7: "шт",
+						  8: "зубчик",
+						  9: "пучок",
+						  10: "щепотка",
+						  11: "упаковка",
+						  12: "дольки",
+						  13: "стакан",
+						  14: "ложка",
+						  15: "вилка",
+						  16: "пачка",
+						  17: "ломтик",
+						  18: "банка",
+						  19: "бутылка",
+						  20: "по вкусу"
+						};
+
+						var ingrds = {};
+						$$.each(resp.dish_ingredient, function(i, di) {
+							di.measure = measures[di.mera === null ? '' : di.mera];
+							ingrds[di.ingredientId] = {
+								di: di
+							}
+						});
+
+						var ingrIds = Object.keys(ingrds);
+
+						if ( !ingrIds.length ) {
+							$$('.ingr-rel').hide();
+						} else {
+							$$('.ingr-rel').show();
+
+							$$.ajax({
+								dataType: 'json',
+								data: {
+									filter: 'id,in,' + ingrIds.join(',')
+								},
+								url: 'http://r.uartema.com/api/api.php/ingredient?transform=1',
+								success: function (resp) {
+									$$.each(resp.ingredient, function(i, ing) {
+										ing.name = ing.name.toLowerCase();
+										ingrds[ing.id]['ing'] = ing;
+									});
+
+									var ingrsTemplate = $$('script#ingrstpl').html();
+									var compiledIngrsTemplate = Template7.compile(ingrsTemplate);
+
+									$$('#ingrs').html(compiledIngrsTemplate({
+										ingrds: ingrds
+									}));
+								}
+							});
+						}
+					}
+				});
+
+
+
+				// Steps
+				$$.ajax({
+					dataType: 'json',
+					data: {
+						filter: 'dishId,eq,'+id
+					},
+					url: 'http://r.uartema.com/api/api.php/step?transform=1&order=index',
+					success: function (resp) {
+						console.log(resp);
+						var stepsTemplate = $$('script#stepstpl').html();
+						var compiledStepsTemplate = Template7.compile(stepsTemplate);
+
+						$$('#steps').html(compiledStepsTemplate({
+							steps: resp.step
+						}));
+					}
+				});
+
 
 
 			}
