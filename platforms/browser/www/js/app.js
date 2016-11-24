@@ -302,7 +302,7 @@ var app = {
 			filters.push('name,cs,' + app.q);
         }
 		// /Filters
-// alert(app.randomize);
+
         app.ajax1Id = $$.ajax({
             dataType: 'json',
             data: {

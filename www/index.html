@@ -207,13 +207,8 @@
 
             <div class="">время приготовления: {{recept.minut}}, {{recept.portion}} порций</div>
 
-            <p>
-                <a href="#" class="fav-recept"><i class="material-icons">bookmark</i></a>
-
-                <a href="#" class="close-popup close-recept"><i class="material-icons">close</i></a>
-            </p>
+            <a href="#" class="close-popup close-recept"><i class="material-icons">close</i></a>
         </div>
-
         
 
         <div class="content-block">
@@ -245,6 +240,14 @@
 
         <div class="content-block-title">Пошаговая инструкция</div>
         <div class="content-block inset"><div class="content-block-inner" id="steps"></div></div>
+
+        <div class="content-block inset"><div class="content-block-inner">
+            <p class="buttons-row">
+                <a href="#" class="button button-fill color-green">Сохранить</a>
+                <a href="#" class="close-popup button button-fill color-orange">Закрыть</a>
+            </p>
+        </div></div>
+        
     </script>
 
     <script id="ingrstpl" type="text/template7">
