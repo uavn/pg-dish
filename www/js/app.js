@@ -301,9 +301,8 @@ var app = {
 
         // Filters
         var filters = [];
-
 		if ( app.loadIds ) {
-			filters.push('in,in,' + app.loadIds);
+			filters.push('id,in,' + app.loadIds.join(','));
 		} else {
 			if (app.categoryId) {
 				filters.push('categoryId,eq,' + app.categoryId);
