@@ -1,7 +1,7 @@
 // Initialize app
 var myApp = new Framework7({
     // Default title for modals
-    modalTitle: 'Recepts',
+    modalTitle: 'Рецепты',
  
     // If it is webapp, we can enable hash navigation:
     pushState: true,
@@ -187,7 +187,7 @@ var app = {
 		    }
 		});  
 
-        this.loadCategories();
+        app.loadRecepts();
     },
 
     loadCategories: function() {
