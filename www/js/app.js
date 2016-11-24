@@ -21,7 +21,7 @@ var mainView = myApp.addView('.view-main', {
 var app = {
 	loading: false,
 	page: 1,
-	limit: 10,
+	limit: 20,
 	categoryId: null,
 	nationId: null,
 
@@ -101,7 +101,7 @@ var app = {
 
         	$$('#title').html('Все рецепты');
 
-            app.loadRecepts(1);
+            app.loadRecepts();
         });
 
         $$(document).on('click', '.open-category', function() {
@@ -115,7 +115,7 @@ var app = {
 
         	$$('#title').html('Рецепты в категории');
 
-            app.loadRecepts(1);
+            app.loadRecepts();
         });
 
         $$(document).on('click', '.open-nation', function() {
@@ -129,7 +129,7 @@ var app = {
 
         	$$('#title').html('Национальные рецепты');
 
-            app.loadRecepts(1);
+            app.loadRecepts();
         });
 
         $$(document).on('click', '.open-type', function() {
@@ -143,7 +143,7 @@ var app = {
 
         	$$('#title').html('Типы');
 
-            app.loadRecepts(1);
+            app.loadRecepts();
         });
 
         $$('.infinite-scroll').on('infinite', function () {
@@ -153,7 +153,7 @@ var app = {
 			// Set loading flag
 			app.loading = true;
 
-			app.loadRecepts(app.page+1);
+			app.loadRecepts(app.page + 1);
  		});
 
 		$$(document).on('click', '.recept-link', function() {
@@ -169,11 +169,14 @@ var app = {
  		var mySearchbar = myApp.searchbar('.searchbar', {
 		    customSearch: true,
 		    onSearch: function(s) {
+		    	app.categoryId = null;
+	        	app.nationId = null;
+	        	app.typeId = null;
 		    	app.q = s.value;
 		    	
 		    	$$('#myContent').html('');
 		    	
-		    	app.loadRecepts(1);
+		    	app.loadRecepts();
 
 		    	$$('.searchbar-overlay').hide();
 
@@ -181,7 +184,7 @@ var app = {
 		    },
 		    onClear: function(s) {
 		    	app.q = null;
-		    	app.loadRecepts(1);
+		    	app.loadRecepts();
 
 		    	$$('#title').html('Все рецепты');
 		    }
@@ -267,7 +270,7 @@ var app = {
 		}
 
 		// Params
-    	if ( page <= 1 ) {
+    	if ( !page || page <= 1 ) {
         	app.page = 1;
         } else {
         	app.page = page;
@@ -297,7 +300,7 @@ var app = {
             dataType: 'json',
             data: {
                 filter: filters,
-                page: page + ',' + app.limit,
+                page: app.page + ',' + app.limit,
                 order: 'id,desc'
             },
             url: 'http://r.uartema.com/api/api.php/dish?transform=1',
