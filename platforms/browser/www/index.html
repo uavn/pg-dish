@@ -80,6 +80,16 @@
                 <div class="list-block media-list">
                     <ul>
                         <li>
+                            <a href="#" class="tab-all item-link item-content">
+                                <div class="item-inner">
+                                    <div class="item-title-row">
+                                        <div class="item-title">Все рецепты</div>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+
+                        <li>
                             <a href="#" class="tab-categories item-link item-content">
                                 <div class="item-inner">
                                   <div class="item-title-row">
@@ -110,16 +120,6 @@
                         </li>
 
                         <li>
-                            <a href="#" class="tab-all item-link item-content">
-                                <div class="item-inner">
-                                  <div class="item-title-row">
-                                    <div class="item-title">Все рецепты</div>
-                                  </div>
-                                </div>
-                            </a>
-                        </li>
-
-                        <li>
                             <a href="#" class="tab-history item-link item-content">
                                 <div class="item-inner">
                                   <div class="item-title-row">
@@ -132,9 +132,19 @@
                         <li>
                             <a href="#" class="tab-fav item-link item-content">
                                 <div class="item-inner">
-                                  <div class="item-title-row">
-                                    <div class="item-title">Избранные</div>
-                                  </div>
+                                    <div class="item-title-row">
+                                        <div class="item-title">Избранные</div>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="#" class="tab-creds item-link item-content">
+                                <div class="item-inner">
+                                    <div class="item-title-row">
+                                        <div class="item-title">О приложении</div>
+                                    </div>
                                 </div>
                             </a>
                         </li>
@@ -269,6 +279,18 @@
             {{this.text}}
         </p>
         {{/each}}
+    </script>
+
+    <script id="creds" type="text/template7">
+        <div class="content-block-title">О приложении</div>
+        <div class="content-block inset">
+            <div class="content-block-inner">
+                Разработано в <a href="http://uartema.com">UArtema Software</a>
+                с использованием <a href="https://framework7.io/">Framework7</a>,
+                <a href="https://material.io/icons/">Material Icons</a>
+                и <a href="http://phonegap.com/">Adobe PhoneGap</a>.
+            </div>
+        </div>
     </script>
     <!-- /Templates -->
 

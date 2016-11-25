@@ -22,6 +22,7 @@ var app = {
 	loading: false,
 	page: 1,
 	limit: 20,
+    historyLimit: 30,
 	categoryId: null,
 	nationId: null,
 	randomize: false,
@@ -107,6 +108,17 @@ var app = {
 	        app.loadRecepts();
         });
 
+        $$('.tab-creds').click(function() {
+        	myApp.closePanel();
+
+            var tpl = Template7.compile($$('script#creds').html());
+
+            $$('#myContent').html(tpl({
+            }));
+
+        	$$('#title').html('О приложении');
+        });
+
         $$(document).on('click', '.open-category', function() {
         	app.nationId = null;
         	app.typeId = null;
@@ -153,14 +165,22 @@ var app = {
         });
 
         $$(document).on('click', '.tab-history', function() {
+            myApp.closePanel();
+
 			var storage = window.localStorage;
 
 			var history = storage.getItem('history');
 			if ( history ) {
-				app.loadIds = history;
-				app.loadRecepts();
-				app.loadIds = [];
-			} else {
+                app.randomize = false;
+
+                $$('#myContent').html('');
+
+                app.loadIds = JSON.parse(history);
+                app.loadRecepts();
+                app.loadIds = [];
+
+                $$('#title').html('История просмотров');
+            } else {
 				myApp.alert('История пустая');
 			}
         });
@@ -232,6 +252,9 @@ var app = {
                 }));
 
                 $$('#myContent').find('.item-link').addClass('open-category');
+            },
+            error: function() {
+                myApp.alert('Произошла ошибка, попробуйте еще раз');
             }
         });
     },
@@ -253,6 +276,9 @@ var app = {
                 }));
 
                 $$('#myContent').find('.item-link').addClass('open-nation');
+            },
+            error: function() {
+                myApp.alert('Произошла ошибка, попробуйте еще раз');
             }
         });
     },
@@ -272,11 +298,18 @@ var app = {
                 }));
 
                 $$('#myContent').find('.item-link').addClass('open-type');
+            },
+            error: function() {
+                myApp.alert('Произошла ошибка, попробуйте еще раз');
             }
         });
     },
 
     loadRecepts: function(page) {
+        var loadIds = ( app.loadIds )
+            ? app.loadIds
+            : [];
+
     	// myApp.closeModal('.popup-recept');
 
 		// Kill old ajaxs
@@ -299,44 +332,71 @@ var app = {
         	app.page = page;
         }
 
+        page = (app.randomize
+            ? '1,' + app.limit
+            : app.page + ',' + app.limit
+        );
+
+        var infScroll = true;
+
         // Filters
         var filters = [];
-		if ( app.loadIds ) {
-			filters.push('id,in,' + app.loadIds.join(','));
-		} else {
-			if (app.categoryId) {
-				filters.push('categoryId,eq,' + app.categoryId);
-			}
+        if ( loadIds.length > 0 ) {
+            filters.push('id,in,' + loadIds.join(','));
 
-			if (app.nationId) {
-				filters.push('nationalityId,eq,' + app.nationId);
-			}
+            page = '1,' + app.historyLimit;
 
-			if (app.typeId) {
-				filters.push('typeId,eq,' + app.typeId);
-			}
+            infScroll = false;
+        } else {
+            if (app.categoryId) {
+                filters.push('categoryId,eq,' + app.categoryId);
+            }
 
-			if (app.q) {
-				filters.push('name,cs,' + app.q);
-			}
-		}
-		// /Filters
+            if (app.nationId) {
+                filters.push('nationalityId,eq,' + app.nationId);
+            }
+
+            if (app.typeId) {
+                filters.push('typeId,eq,' + app.typeId);
+            }
+
+            if (app.q) {
+                filters.push('name,cs,' + app.q);
+            }
+        }
+        // /Filters
+
+        var data = {
+            filter: filters,
+            page: page,
+            order: (app.randomize ? 'rand' : 'id,desc')
+        };
 
         app.ajax1Id = $$.ajax({
             dataType: 'json',
-            data: {
-                filter: filters,
-                page: (app.randomize ? '1,' + app.limit : app.page + ',' + app.limit),
-                order: (app.randomize ? 'rand' : 'id,desc')
-            },
+            data: data,
             url: 'http://r.uartema.com/api/api.php/dish?transform=1',
             success: function( resp ) {
-                var dishes = [];
-
                 var categoriesIds = [];
                 var nationIds = [];
-                $$.each(resp.dish, function(i, dish) {
+
+                var rdishes = [];
+                if ( loadIds.length ) {
+                    var dishes = {};
+                    $$.each(resp.dish, function (i, d) {
+                        dishes[d.id] = d;
+                    });
+
+                    $$.each(loadIds.reverse(), function (i, d) {
+                        rdishes.push(dishes[d]);
+                    });
+                } else {
+                    rdishes = resp.dish;
+                }
+
+                $$.each(rdishes, function(i, dish) {
                 	categoriesIds.push(dish.categoryId);
+
                 	if ( dish.nationalityId ) {
                 		nationIds.push(dish.nationalityId);
                 	}
@@ -350,12 +410,12 @@ var app = {
 			            },
 			            url: 'http://r.uartema.com/api/api.php/category?transform=1',
 			            success: function( cresp ) {
-			            	var categories = {};
+                            var categories = {};
 			            	$$.each(cresp.category, function(k, c) {
 			            		categories[c.id] = c;
 			            	});
 
-			            	if ( nationIds ) {
+			            	if ( nationIds ) {categoriesIds.join(',')
 								app.ajax3Id = $$.ajax({
 						            dataType: 'json',
 						            data: {
@@ -364,28 +424,37 @@ var app = {
 						            url: 'http://r.uartema.com/api/api.php/nationality?transform=1',
 						            success: function( nresp ) {
 						            	var nationalities = {};
-						            	$$.each(nresp.nationality, function(k, n) {
+
+                                        $$.each(nresp.nationality, function(k, n) {
 						            		nationalities[n.id] = n;
 						            	});
 
-						            	app.listRecepts(resp.dish, categories, nationalities);
-						            }
+						            	app.listRecepts(rdishes, categories, nationalities, infScroll);
+						            },
+                                    error: function() {
+                                        myApp.alert('Произошла ошибка, попробуйте еще раз');
+                                    }
 						        });
 				            } else {
-				            	app.listRecepts(resp.dish, categories);
+                                app.listRecepts(rdishes, categories, [], infScroll);
 				            }
-			            }
+			            },
+                        error: function() {
+                            myApp.alert('Произошла ошибка, попробуйте еще раз');
+                        }
 			        });
 		        } else {
-		        	app.listRecepts(resp.dish);
+                    app.listRecepts(rdishes, [], [], infScroll);
 		        }
+            },
+            error: function() {
+                myApp.alert('Произошла ошибка, попробуйте еще раз');
             }
         });
     },
 
-    listRecepts: function(dishes, categories, nationalities) {
+    listRecepts: function(dishes, categories, nationalities, infScroll) {
 		var recepts = [];
-
     	$$.each(dishes, function(i, d) {
     		var v = {};
     		if ( d.categoryId ) {
@@ -403,20 +472,26 @@ var app = {
 
     	var receptsTemplate = $$('script#recepts').html();
         var compiledReceptsTemplate = Template7.compile(receptsTemplate);
+
         var content = compiledReceptsTemplate({
         	recepts: recepts
         });
 
         if ( $$('#myContent').find('.list-block').length ) {
-        	var lis = $$(content).find('li');
-        	if ( !lis.length ) {
-				myApp.detachInfiniteScroll($$('.infinite-scroll'));
-        	}
+            var lis = $$(content).find('li');
+            if ( !lis.length ) {
+                myApp.detachInfiniteScroll($$('.infinite-scroll'));
+            }
 
     		$$('#myContent ul').append(lis);
         } else {
     		$$('#myContent').append(content);
-    		myApp.attachInfiniteScroll($$('.infinite-scroll'));
+
+            if ( infScroll ) {
+                myApp.attachInfiniteScroll($$('.infinite-scroll'));
+            } else {
+                myApp.detachInfiniteScroll($$('.infinite-scroll'));
+            }
         }
 
         app.loading = false;
@@ -435,7 +510,7 @@ var app = {
 			history = JSON.parse(history);
 		}
 		// Limit history
-		if ( history.length >= 30 ) {
+		if ( history.length >= app.historyLimit ) {
 			history.shift();
 		}
 		history.push(id);
@@ -468,7 +543,10 @@ var app = {
 							$$('#category-chip span').html(resp.name);
 							$$('#category-chip').css('display', 'inline-block');
 							$$('#category-chip').data('id', resp.id);
-						}
+						},
+                        error: function() {
+                            myApp.alert('Произошла ошибка, попробуйте еще раз');
+                        }
 					});
 				}
 
@@ -480,7 +558,10 @@ var app = {
 							$$('#nation-chip span').html(resp.name);
 							$$('#nation-chip').css('display', 'inline-block');
 							$$('#nation-chip').data('id', resp.id);
-						}
+						},
+                        error: function() {
+                            myApp.alert('Произошла ошибка, попробуйте еще раз');
+                        }
 					});
 				}
 
@@ -492,7 +573,10 @@ var app = {
 							$$('#type-chip span').html(resp.name);
 							$$('#type-chip').css('display', 'inline-block');
 							$$('#type-chip').data('id', resp.id);
-						}
+						},
+                        error: function() {
+                            myApp.alert('Произошла ошибка, попробуйте еще раз');
+                        }
 					});
 				}
 
@@ -562,10 +646,16 @@ var app = {
 									$$('#ingrs').html(compiledIngrsTemplate({
 										ingrds: ingrds
 									}));
-								}
+								},
+                                error: function() {
+                                    myApp.alert('Произошла ошибка, попробуйте еще раз');
+                                }
 							});
 						}
-					}
+					},
+                    error: function() {
+                        myApp.alert('Произошла ошибка, попробуйте еще раз');
+                    }
 				});
 
 
@@ -584,12 +674,15 @@ var app = {
 						$$('#steps').html(compiledStepsTemplate({
 							steps: resp.step
 						}));
-					}
+					},
+                    error: function() {
+                        myApp.alert('Произошла ошибка, попробуйте еще раз');
+                    }
 				});
-
-
-
-			}
+			},
+            error: function() {
+                myApp.alert('Произошла ошибка, попробуйте еще раз');
+            }
 		});
 
 	}
