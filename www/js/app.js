@@ -185,7 +185,33 @@ var app = {
 			}
         });
 
+		$$(document).on('click', '.tab-fav', function() {
+			myApp.closePanel();
 
+            myApp.materialTabbarSetHighlight(
+                $$('.tabbar.toolbar-bottom'),
+                $$(this)
+            );
+            $$('.art-tabs .tab-link').removeClass('active');
+            $$(this).addClass('active');
+
+			var storage = window.localStorage;
+
+			var fav = storage.getItem('fav');
+			if ( fav ) {
+				app.randomize = false;
+
+				$$('#myContent').html('');
+
+				app.loadIds = JSON.parse(fav);
+				app.loadRecepts();
+				app.loadIds = [];
+
+				$$('#title').html('Избранные рецепты');
+			} else {
+				myApp.alert('Избранных нет');
+			}
+		});
 
         $$('.infinite-scroll').on('infinite', function () {
         	// Exit, if loading in progress
@@ -205,6 +231,57 @@ var app = {
 
 		$$(document).on('click', '.chip', function() {
 			myApp.closeModal('.popup-recept');
+		});
+
+        $$(document).on('click', '.rm-fav-rec', function() {
+            var id = $$(this).data('id');
+            var storage = window.localStorage;
+
+            var fav = storage.getItem('fav');
+            if ( fav ) {
+                fav = JSON.parse(fav);
+
+                var key = fav.indexOf(id);
+
+                if ( key > -1 ) {
+                    fav.splice(key, 1);
+
+                    storage.setItem('fav', JSON.stringify(fav));
+
+                    myApp.alert('Рецепт убран из списка избранных');
+                }
+            }
+
+            $$('.add-fav-rec').show();
+            $$('.rm-fav-rec').hide();
+
+            $$('.tab-fav').click();
+        });
+
+
+		$$(document).on('click', '.add-fav-rec', function() {
+            var id = $$(this).data('id');
+			var storage = window.localStorage;
+
+			var fav = storage.getItem('fav');
+			if ( !fav ) {
+				fav = [];
+			} else {
+				fav = JSON.parse(fav);
+			}
+
+			if ( fav.indexOf(id) > -1 ) {
+                myApp.alert('Этот рецепт уже в списке избранных');
+            } else {
+                fav.push(id);
+
+                storage.setItem('fav', JSON.stringify(fav));
+
+                myApp.alert('Рецепт добавлен в список избранных');
+            }
+
+            $$('.add-fav-rec').hide();
+            $$('.rm-fav-rec').show();
 		});
 
  		var mySearchbar = myApp.searchbar('.searchbar', {
@@ -252,6 +329,8 @@ var app = {
                 }));
 
                 $$('#myContent').find('.item-link').addClass('open-category');
+
+				$$(window).scrollTop(0);
             },
             error: function() {
                 myApp.alert('Произошла ошибка, попробуйте еще раз');
@@ -276,6 +355,8 @@ var app = {
                 }));
 
                 $$('#myContent').find('.item-link').addClass('open-nation');
+
+				$$(window).scrollTop(0);
             },
             error: function() {
                 myApp.alert('Произошла ошибка, попробуйте еще раз');
@@ -298,6 +379,8 @@ var app = {
                 }));
 
                 $$('#myContent').find('.item-link').addClass('open-type');
+
+				$$(window).scrollTop(0);
             },
             error: function() {
                 myApp.alert('Произошла ошибка, попробуйте еще раз');
@@ -344,7 +427,7 @@ var app = {
         if ( loadIds.length > 0 ) {
             filters.push('id,in,' + loadIds.join(','));
 
-            page = '1,' + app.historyLimit;
+            page = '1';
 
             infScroll = false;
         } else {
@@ -377,6 +460,10 @@ var app = {
             data: data,
             url: 'http://r.uartema.com/api/api.php/dish?transform=1',
             success: function( resp ) {
+                if ( !resp.dish.length ) {
+                    myApp.alert('Ничего не найдено');
+                }
+
                 var categoriesIds = [];
                 var nationIds = [];
 
@@ -477,6 +564,8 @@ var app = {
         	recepts: recepts
         });
 
+        $$(window).scrollTop(0);
+
         if ( $$('#myContent').find('.list-block').length ) {
             var lis = $$(content).find('li');
             if ( !lis.length ) {
@@ -531,7 +620,26 @@ var app = {
 					recept: resp
 				}));
 
-				$$('.recept-title').html(resp.name);
+                $$(window).scrollTop(0);
+
+                // Check for fav
+                var storage = window.localStorage;
+                var fav = storage.getItem('fav');
+                if ( fav ) {
+                    fav = JSON.parse(fav);
+
+                    if ( fav.indexOf(id) > -1 ) {
+                        $$('.rm-fav-rec').show();
+                    } else {
+                        $$('.add-fav-rec').show();
+                    }
+                } else {
+                    $$('.add-fav-rec').show();
+                }
+                // /Check for fav
+
+
+                $$('.recept-title').html(resp.name);
 
 				myApp.popup('.popup-recept');
 

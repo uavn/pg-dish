@@ -219,7 +219,7 @@
 
             <a href="#" class="close-popup close-recept"><i class="material-icons">close</i></a>
         </div>
-        
+
 
         <div class="content-block">
             <a href="#" class="chip open-category" id="category-chip" style="display: none">
@@ -253,7 +253,8 @@
 
         <div class="content-block inset"><div class="content-block-inner">
             <p class="buttons-row">
-                <a href="#" class="button button-fill color-green">Сохранить</a>
+                <a href="#" data-id="{{recept.id}}" style="display:none" class="add-fav-rec button button-fill color-green">Сохранить</a>
+                <a href="#" data-id="{{recept.id}}" style="display:none" class="rm-fav-rec button button-fill color-blue">Убрать из избранных</a>
                 <a href="#" class="close-popup button button-fill color-orange">Закрыть</a>
             </p>
         </div></div>
@@ -283,6 +284,7 @@
 
     <script id="creds" type="text/template7">
         <div class="content-block-title">О приложении</div>
+
         <div class="content-block inset">
             <div class="content-block-inner">
                 Разработано в <a href="http://uartema.com">UArtema Software</a>
