@@ -182,31 +182,25 @@
     </script>
 
     <script id="recepts" type="text/template7">
-        <div class="list-block media-list">
-            <ul>
-                {{#each recepts}}
-                <li>
-                    <a href="#" class="recept-link item-link item-content" data-id="{{this.recept.id}}">
-                        <div class="item-media">
-                            <img src="http://r.uartema.com/photos/{{this.recept.photo}}" width="80" />
-                        </div>
+        {{#each recepts}}
+            <div class="card recept-card-header-pic">
+                <div style="background-image:url('http://r.uartema.com/photos/{{this.recept.photo}}')" valign="bottom" class="card-header color-white no-border">{{this.recept.name}}</div>
 
-                        <div class="item-inner">
-                            <div class="item-title-row">
-                                <div class="item-title">{{this.recept.name}}</div>
-                            </div>
+                <div class="card-content">
+                    <div class="card-content-inner">
+                        <p class="color-gray">
+                            {{#if this.category}}{{this.category.name}}{{/if}}{{#if this.nationality}}, {{this.nationality.name}} кухня{{/if}}
+                        </p>
 
-                            <div class="item-subtitle">
-                                {{#if this.category}}{{this.category.name}}{{/if}}{{#if this.nationality}}, {{this.nationality.name}} кухня{{/if}}
-                            </div>
+                        <p>{{this.recept.description}}</p>
+                    </div>
+                </div>
 
-                            <div class="item-text">{{this.recept.description}}</div>
-                        </div>
-                    </a>
-                </li>
-                {{/each}}
-            </ul>
-        </div>
+                <div class="card-footer">
+                    <a href="#" class="link recept-link" data-id="{{this.recept.id}}">Подробнее &raquo;</a>
+                </div>
+            </div>
+        {{/each}}
     </script>
 
     <script id="recept" type="text/template7">

@@ -14,3 +14,10 @@
 	right: 10px;
 	font-size: 25px;
 }
+
+.recept-card-header-pic .card-header {
+	height: 40vw;
+	background-size: cover;
+	background-position: center;
+	text-shadow: 0 0 8px #000;
+}
