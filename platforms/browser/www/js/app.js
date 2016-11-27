@@ -37,9 +37,15 @@ var app = {
     		myApp.showIndicator();
     	});
 
-    	$$(document).on('ajaxComplete', function() {
-    		myApp.hideIndicator();
-    	});
+        $$(document).on('ajaxComplete', function() {
+            myApp.hideIndicator();
+        });
+
+        $$(document).on('ajaxError', function() {
+            myApp.hideIndicator();
+
+            myApp.alert('Произошла ошибка, попробуйте еще раз');
+        });
 
         $$('.tab-categories').click(function() {
         	myApp.closePanel();
@@ -276,8 +282,7 @@ var app = {
                 fav.push(id);
 
                 storage.setItem('fav', JSON.stringify(fav));
-
-                myApp.alert('Рецепт добавлен в список избранных');
+                // myApp.alert('Рецепт добавлен в список избранных');
             }
 
             $$('.add-fav-rec').hide();
@@ -331,9 +336,6 @@ var app = {
                 $$('#myContent').find('.item-link').addClass('open-category');
 
 				$$(window).scrollTop(0);
-            },
-            error: function() {
-                myApp.alert('Произошла ошибка, попробуйте еще раз');
             }
         });
     },
@@ -357,9 +359,6 @@ var app = {
                 $$('#myContent').find('.item-link').addClass('open-nation');
 
 				$$(window).scrollTop(0);
-            },
-            error: function() {
-                myApp.alert('Произошла ошибка, попробуйте еще раз');
             }
         });
     },
@@ -381,9 +380,6 @@ var app = {
                 $$('#myContent').find('.item-link').addClass('open-type');
 
 				$$(window).scrollTop(0);
-            },
-            error: function() {
-                myApp.alert('Произошла ошибка, попробуйте еще раз');
             }
         });
     },
@@ -461,7 +457,7 @@ var app = {
             data: data,
             url: 'http://r.uartema.com/api/api.php/dish?transform=1',
             success: function( resp ) {
-                if ( !resp.dish.length ) {
+                if ( !resp.dish.length && !infScroll ) {
                     myApp.alert('Ничего не найдено');
                 }
 
@@ -528,25 +524,16 @@ var app = {
 						            	});
 
 						            	app.listRecepts(rdishes, categories, nationalities, infScroll);
-						            },
-                                    error: function() {
-                                        myApp.alert('Произошла ошибка, попробуйте еще раз');
-                                    }
+						            }
 						        });
 				            } else {
                                 app.listRecepts(rdishes, categories, [], infScroll);
 				            }
-			            },
-                        error: function() {
-                            myApp.alert('Произошла ошибка, попробуйте еще раз');
-                        }
+			            }
 			        });
 		        } else {
                     app.listRecepts(rdishes, [], [], infScroll);
 		        }
-            },
-            error: function() {
-                myApp.alert('Произошла ошибка, попробуйте еще раз');
             }
         });
     },
@@ -662,10 +649,7 @@ var app = {
 							$$('#category-chip span').html(resp.name);
 							$$('#category-chip').css('display', 'inline-block');
 							$$('#category-chip').data('id', resp.id);
-						},
-                        error: function() {
-                            myApp.alert('Произошла ошибка, попробуйте еще раз');
-                        }
+						}
 					});
 				}
 
@@ -677,10 +661,7 @@ var app = {
 							$$('#nation-chip span').html(resp.name);
 							$$('#nation-chip').css('display', 'inline-block');
 							$$('#nation-chip').data('id', resp.id);
-						},
-                        error: function() {
-                            myApp.alert('Произошла ошибка, попробуйте еще раз');
-                        }
+						}
 					});
 				}
 
@@ -692,10 +673,7 @@ var app = {
 							$$('#type-chip span').html(resp.name);
 							$$('#type-chip').css('display', 'inline-block');
 							$$('#type-chip').data('id', resp.id);
-						},
-                        error: function() {
-                            myApp.alert('Произошла ошибка, попробуйте еще раз');
-                        }
+						}
 					});
 				}
 
@@ -708,7 +686,7 @@ var app = {
 					url: 'http://r.uartema.com/api/api.php/dish_ingredient?transform=1',
 					success: function (resp) {
 						var measures = {
-						  '': "г",
+						  '': "ед",
 						  0: "",
 						  1: "г",
 						  2: "кг",
@@ -765,16 +743,10 @@ var app = {
 									$$('#ingrs').html(compiledIngrsTemplate({
 										ingrds: ingrds
 									}));
-								},
-                                error: function() {
-                                    myApp.alert('Произошла ошибка, попробуйте еще раз');
-                                }
+								}
 							});
 						}
-					},
-                    error: function() {
-                        myApp.alert('Произошла ошибка, попробуйте еще раз');
-                    }
+					}
 				});
 
 
@@ -793,15 +765,9 @@ var app = {
 						$$('#steps').html(compiledStepsTemplate({
 							steps: resp.step
 						}));
-					},
-                    error: function() {
-                        myApp.alert('Произошла ошибка, попробуйте еще раз');
-                    }
+					}
 				});
-			},
-            error: function() {
-                myApp.alert('Произошла ошибка, попробуйте еще раз');
-            }
+			}
 		});
 
 	}

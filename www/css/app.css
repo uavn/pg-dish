@@ -15,8 +15,13 @@
 	font-size: 25px;
 }
 
+.recept-card-header-pic {
+	border-bottom: 1px solid #eee;
+	display: block;
+}
+
 .recept-card-header-pic .card-header {
-	height: 40vw;
+	height: 55vw;
 	background-size: cover;
 	background-position: center;
 	text-shadow: 0 0 8px #000;

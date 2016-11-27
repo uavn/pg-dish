@@ -183,7 +183,7 @@
 
     <script id="recepts" type="text/template7">
         {{#each recepts}}
-            <div class="card recept-card-header-pic">
+            <a data-id="{{this.recept.id}}" href="" class="recept-link card recept-card-header-pic">
                 <div style="background-image:url('http://r.uartema.com/photos/{{this.recept.photo}}')" valign="bottom" class="card-header color-white no-border">{{this.recept.name}}</div>
 
                 <div class="card-content">
@@ -192,14 +192,12 @@
                             {{#if this.category}}{{this.category.name}}{{/if}}{{#if this.nationality}}, {{this.nationality.name}} кухня{{/if}}
                         </p>
 
-                        <p>{{this.recept.description}}</p>
+                        {{#if this.recept.description}}
+                            <p class="color-black">{{this.recept.description}}</p>
+                        {{/if}}
                     </div>
                 </div>
-
-                <div class="card-footer">
-                    <a href="#" class="link recept-link" data-id="{{this.recept.id}}">Подробнее &raquo;</a>
-                </div>
-            </div>
+            </a>
         {{/each}}
     </script>
 
@@ -248,7 +246,8 @@
         <div class="content-block inset"><div class="content-block-inner">
             <p class="buttons-row">
                 <a href="#" data-id="{{recept.id}}" style="display:none" class="add-fav-rec button button-fill color-green">Сохранить</a>
-                <a href="#" data-id="{{recept.id}}" style="display:none" class="rm-fav-rec button button-fill color-blue">Убрать из избранных</a>
+                <a href="#" data-id="{{recept.id}}" style="display:none" class="rm-fav-rec button button-fill color-blue">Убрать</a>
+
                 <a href="#" class="close-popup button button-fill color-orange">Закрыть</a>
             </p>
         </div></div>
@@ -258,7 +257,10 @@
     <script id="ingrstpl" type="text/template7">
         {{#each ingrds}}
         <p>
-            {{this.ing.name}} ({{this.di.cnt}}{{this.di.measure}}{{#if this.di.prim}}, {{this.di.prim}}{{/if}})
+            {{this.ing.name}}
+            {{#if this.di.cnt}}
+                ({{#if this.di.cnt}}{{this.di.cnt}} {{this.di.measure}}{{/if}}{{#if this.di.prim}}, {{this.di.prim}}{{/if}})
+            {{/if}}
         </p>
         {{/each}}
     </script>
