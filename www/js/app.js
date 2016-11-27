@@ -457,6 +457,7 @@ var app = {
 
         app.ajax1Id = $$.ajax({
             dataType: 'json',
+			type: 'POST',
             data: data,
             url: 'http://r.uartema.com/api/api.php/dish?transform=1',
             success: function( resp ) {
@@ -474,22 +475,32 @@ var app = {
                         dishes[d.id] = d;
                     });
 
-                    $$.each(loadIds.reverse(), function (i, d) {
-                        rdishes.push(dishes[d]);
+                    $$.each(loadIds.reverse(), function (i, id) {
+                        if ( dishes[id] ) {
+                            rdishes.push(dishes[id]);
+                        }
                     });
                 } else {
                     rdishes = resp.dish;
                 }
 
+                rdishes = $$.unique(rdishes);
+
                 $$.each(rdishes, function(i, dish) {
-                	categoriesIds.push(dish.categoryId);
+                    if ( dish.categoryId ) {
+                        categoriesIds.push(dish.categoryId);
+                    }
 
                 	if ( dish.nationalityId ) {
                 		nationIds.push(dish.nationalityId);
                 	}
                 });
 
-                if ( categoriesIds ) {
+                categoriesIds = $$.unique(categoriesIds);
+                nationIds = $$.unique(nationIds);
+
+
+                if ( categoriesIds.length ) {
 					app.ajax2Id = $$.ajax({
 			            dataType: 'json',
 			            data: {
@@ -502,7 +513,7 @@ var app = {
 			            		categories[c.id] = c;
 			            	});
 
-			            	if ( nationIds ) {categoriesIds.join(',')
+			            	if ( nationIds.length ) {
 								app.ajax3Id = $$.ajax({
 						            dataType: 'json',
 						            data: {
@@ -620,7 +631,7 @@ var app = {
 					recept: resp
 				}));
 
-                $$(window).scrollTop(0);
+                $$('.popup-recept').scrollTop(0);
 
                 // Check for fav
                 var storage = window.localStorage;
