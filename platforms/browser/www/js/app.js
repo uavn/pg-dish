@@ -577,13 +577,13 @@ var app = {
 
         $$(window).scrollTop(0);
 
-        if ( $$('#myContent').find('.list-block').length ) {
-            var lis = $$(content).find('li');
+        if ( $$('#myContent').find('.card').length ) {
+            var lis = $$('<div/>').html(content).find('.card');
             if ( !lis.length ) {
                 myApp.detachInfiniteScroll($$('.infinite-scroll'));
             }
 
-    		$$('#myContent ul').append(lis);
+    		$$('#myContent').append(content);
         } else {
     		$$('#myContent').append(content);
 
