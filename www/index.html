@@ -25,7 +25,7 @@
         <div class="pages navbar-fixed _toolbar-fixed">
           <!-- Page, "data-page" contains page name -->
           <div data-page="index" class="page">
- 
+
             <!-- Top Navbar. In Material theme it should be inside of the page-->
             <div class="navbar">
                 <div class="navbar-inner">
@@ -47,7 +47,7 @@
                 </div>
                 <a href="#" class="searchbar-cancel">Отмена</a>
             </form>
-            
+
             <!-- Search Bar overlay-->
             <div class="searchbar-overlay"></div>
 
@@ -57,7 +57,7 @@
                 <!--<div class="content-block-title">Список</div>-->
                 <div class="" id="myContent"></div>
             </div>
- 
+
             <div class="toolbar tabbar toolbar-bottom layout-dark">
                 <div class="toolbar-inner art-tabs">
                     <a id="tab-all" href="#myContent" class="tab-all tab-link active"><i class="material-icons">home</i></a>
@@ -74,7 +74,7 @@
 
             <!-- First, we need to add Panel's overlay that will overlays app while panel is opened -->
             <div class="panel-overlay"></div>
-         
+
             <!-- Left panel -->
             <div class="panel panel-left panel-cover layout-dark">
                 <div class="list-block media-list">
@@ -134,6 +134,16 @@
                                 <div class="item-inner">
                                     <div class="item-title-row">
                                         <div class="item-title">Избранные</div>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="#" class="tab-form item-link item-content">
+                                <div class="item-inner">
+                                    <div class="item-title-row">
+                                        <div class="item-title">Поиск по ингридиентам</div>
                                     </div>
                                 </div>
                             </a>
@@ -251,7 +261,7 @@
                 <a href="#" class="close-popup button button-fill color-orange">Закрыть</a>
             </p>
         </div></div>
-        
+
     </script>
 
     <script id="ingrstpl" type="text/template7">
@@ -290,6 +300,29 @@
             </div>
         </div>
     </script>
+
+    <script id="form" type="text/template7">
+        <div class="content-block-title">Поиск по ингридиентам</div>
+
+        <div class="content-block" id="selectedChips"></div>
+
+        <form action="#" class="list-block inputs-lis">
+            <ul>
+                <li class="item-content">
+                    <div class="item-title label">Ингридиент</div>
+
+                    <div class="item-input">
+                        <input type="text" placeholder="Название" id="autocomplete-dropdown-ajax">
+                    </div>
+                </li>
+            </ul>
+        </form>
+
+        <div class="content-block">
+            <a href="#" id="processSearch" class="button button-fill button-big color-green">Поиск</a>
+        </div>
+    </script>
+
     <!-- /Templates -->
 
     <!-- Popup -->

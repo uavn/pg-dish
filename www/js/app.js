@@ -2,7 +2,7 @@
 var myApp = new Framework7({
     // Default title for modals
     modalTitle: 'Рецепты',
- 
+
     // If it is webapp, we can enable hash navigation:
     pushState: true,
 
@@ -19,23 +19,23 @@ var mainView = myApp.addView('.view-main', {
 });
 
 var app = {
-	loading: false,
-	page: 1,
-	limit: 20,
+  	loading: false,
+  	page: 1,
+  	limit: 20,
     historyLimit: 30,
-	categoryId: null,
-	nationId: null,
-	randomize: false,
-	loadIds: null,
+  	categoryId: null,
+  	nationId: null,
+  	randomize: false,
+  	loadIds: null,
 
-	ajax1Id: null,
-	ajax2Id: null,
-	ajax3Id: null,
+  	ajax1Id: null,
+  	ajax2Id: null,
+  	ajax3Id: null,
 
     init: function() {
-    	$$(document).on('ajaxStart', function() {
-    		myApp.showIndicator();
-    	});
+      	$$(document).on('ajaxStart', function() {
+      		  myApp.showIndicator();
+      	});
 
         $$(document).on('ajaxComplete', function() {
             myApp.hideIndicator();
@@ -43,17 +43,17 @@ var app = {
 
         $$(document).on('ajaxError', function() {
             myApp.hideIndicator();
-
             myApp.alert('Произошла ошибка, попробуйте еще раз');
         });
 
         $$('.tab-categories').click(function() {
-        	myApp.closePanel();
+          	myApp.closePanel();
 
-        	myApp.materialTabbarSetHighlight(
-        		$$('.tabbar.toolbar-bottom'),
-        		$$(this)
-    		);
+          	myApp.materialTabbarSetHighlight(
+            		$$('.tabbar.toolbar-bottom'),
+            		$$(this)
+    		    );
+
             $$('.art-tabs .tab-link').removeClass('active');
             $$(this).addClass('active');
 
@@ -63,12 +63,13 @@ var app = {
         });
 
         $$('.tab-nations').click(function() {
-        	myApp.closePanel();
+          	myApp.closePanel();
 
-        	myApp.materialTabbarSetHighlight(
-        		$$('.tabbar.toolbar-bottom'),
-        		$$(this)
-    		);
+          	myApp.materialTabbarSetHighlight(
+            		$$('.tabbar.toolbar-bottom'),
+            		$$(this)
+        		);
+
             $$('.art-tabs .tab-link').removeClass('active');
             $$(this).addClass('active');
 
@@ -78,12 +79,13 @@ var app = {
         });
 
         $$('.tab-types').click(function() {
-        	myApp.closePanel();
+            myApp.closePanel();
 
-        	myApp.materialTabbarSetHighlight(
-        		$$('.tabbar.toolbar-bottom'),
-        		$$(this)
-    		);
+            myApp.materialTabbarSetHighlight(
+          		$$('.tabbar.toolbar-bottom'),
+          		$$(this)
+    		    );
+
             $$('.art-tabs .tab-link').removeClass('active');
             $$(this).addClass('active');
 
@@ -93,90 +95,107 @@ var app = {
         });
 
         $$('.tab-all').click(function() {
-        	myApp.closePanel();
+          	myApp.closePanel();
 
-        	myApp.materialTabbarSetHighlight(
-        		$$('.tabbar.toolbar-bottom'),
-        		$$(this)
-    		);
+          	myApp.materialTabbarSetHighlight(
+            		$$('.tabbar.toolbar-bottom'),
+            		$$(this)
+        		);
+
             $$('.art-tabs .tab-link').removeClass('active');
             $$(this).addClass('active');
 
             app.nationId = null;
-        	app.categoryId = null;
-        	app.typeId = null;
+          	app.categoryId = null;
+          	app.typeId = null;
 
-        	$$('#myContent').html('');
+          	$$('#myContent').html('');
 
-        	$$('#title').html('Все рецепты');
+          	$$('#title').html('Все рецепты');
 
             app.randomize = true;
-	        app.loadRecepts();
+            app.loadRecepts();
         });
 
         $$('.tab-creds').click(function() {
-        	myApp.closePanel();
+            myApp.detachInfiniteScroll($$('.infinite-scroll'));
+            myApp.closePanel();
 
             var tpl = Template7.compile($$('script#creds').html());
 
             $$('#myContent').html(tpl({
             }));
 
-        	$$('#title').html('О приложении');
+            $$('#title').html('О приложении');
+        });
+
+        $$('.tab-form').click(function() {
+            myApp.detachInfiniteScroll($$('.infinite-scroll'));
+            myApp.closePanel();
+
+            var tpl = Template7.compile($$('script#form').html());
+
+            $$('#myContent').html(tpl({
+            }));
+
+            app.setupSuggest();
+
+            $$('#title').html('Поиск по ингридиентам');
         });
 
         $$(document).on('click', '.open-category', function() {
-        	app.nationId = null;
-        	app.typeId = null;
-        	app.q = null;
-        	$$('input[type=search]').val('');
-        	app.categoryId = $$(this).data('id');
+          	app.nationId = null;
+          	app.typeId = null;
+          	app.q = null;
+          	$$('input[type=search]').val('');
+          	app.categoryId = $$(this).data('id');
 
-        	$$('#myContent').html('');
+          	$$('#myContent').html('');
 
-        	$$('#title').html('Рецепты в категории');
+          	$$('#title').html('Рецепты в категории');
 
-        	app.randomize = false;
+          	app.randomize = false;
             app.loadRecepts();
         });
 
         $$(document).on('click', '.open-nation', function() {
-        	app.categoryId = null;
-        	app.typeId = null;
-        	app.q = null;
-        	$$('input[type=search]').val('');
-        	app.nationId = $$(this).data('id');
+          	app.categoryId = null;
+          	app.typeId = null;
+          	app.q = null;
+          	$$('input[type=search]').val('');
+          	app.nationId = $$(this).data('id');
 
-        	$$('#myContent').html('');
+          	$$('#myContent').html('');
 
-        	$$('#title').html('Национальные рецепты');
+          	$$('#title').html('Национальные рецепты');
 
-        	app.randomize = false;
+          	app.randomize = false;
             app.loadRecepts();
         });
 
         $$(document).on('click', '.open-type', function() {
-        	app.categoryId = null;
-        	app.q = null;
-        	$$('input[type=search]').val('');
-        	app.nationId = null;
-        	app.typeId = $$(this).data('id');
+          	app.categoryId = null;
+          	app.q = null;
+          	$$('input[type=search]').val('');
+          	app.nationId = null;
+          	app.typeId = $$(this).data('id');
 
-        	$$('#myContent').html('');
+          	$$('#myContent').html('');
 
-        	$$('#title').html('Типы');
+          	$$('#title').html('Типы');
 
-        	app.randomize = false;
+          	app.randomize = false;
             app.loadRecepts();
         });
 
         $$(document).on('click', '.tab-history', function() {
             myApp.closePanel();
 
-			var storage = window.localStorage;
+            var storage = window.localStorage;
 
-			var history = storage.getItem('history');
-			if ( history ) {
+            var history = storage.getItem('history');
+
+            if ( history ) {
                 app.randomize = false;
 
                 $$('#myContent').html('');
@@ -187,12 +206,12 @@ var app = {
 
                 $$('#title').html('История просмотров');
             } else {
-				myApp.alert('История пустая');
-			}
+                myApp.alert('История пустая');
+            }
         });
 
-		$$(document).on('click', '.tab-fav', function() {
-			myApp.closePanel();
+        $$(document).on('click', '.tab-fav', function() {
+	        myApp.closePanel();
 
             myApp.materialTabbarSetHighlight(
                 $$('.tabbar.toolbar-bottom'),
@@ -201,7 +220,7 @@ var app = {
             $$('.art-tabs .tab-link').removeClass('active');
             $$(this).addClass('active');
 
-			var storage = window.localStorage;
+            var storage = window.localStorage;
 
 			var fav = storage.getItem('fav');
 			if ( fav ) {
@@ -289,6 +308,8 @@ var app = {
             $$('.rm-fav-rec').show();
 		});
 
+        app.initChipEvents();
+
  		var mySearchbar = myApp.searchbar('.searchbar', {
 		    customSearch: true,
 		    onSearch: function(s) {
@@ -296,9 +317,9 @@ var app = {
 	        	app.nationId = null;
 	        	app.typeId = null;
 		    	app.q = s.value;
-		    	
+
 		    	$$('#myContent').html('');
-		    	
+
 		    	app.randomize = false;
 		    	app.loadRecepts();
 
@@ -312,7 +333,7 @@ var app = {
 
 		    	$$('#title').html('Все рецепты');
 		    }
-		});  
+		});
 
  		app.randomize = true;
         app.loadRecepts();
@@ -328,7 +349,7 @@ var app = {
             success: function( resp ) {
                 var categoriesTemplate = $$('script#categories').html();
                 var compiledCategoriesTemplate = Template7.compile(categoriesTemplate);
-                
+
                 $$('#myContent').html(compiledCategoriesTemplate({
                 	categoies: resp.category
                 }));
@@ -351,7 +372,7 @@ var app = {
             success: function( resp ) {
                 var categoriesTemplate = $$('script#categories').html();
                 var compiledCategoriesTemplate = Template7.compile(categoriesTemplate);
-                
+
                 $$('#myContent').html(compiledCategoriesTemplate({
                 	categoies: resp.nationality
                 }));
@@ -372,7 +393,7 @@ var app = {
             success: function( resp ) {
                 var categoriesTemplate = $$('script#categories').html();
                 var compiledCategoriesTemplate = Template7.compile(categoriesTemplate);
-                
+
                 $$('#myContent').html(compiledCategoriesTemplate({
                 	categoies: resp.type
                 }));
@@ -749,8 +770,6 @@ var app = {
 					}
 				});
 
-
-
 				// Steps
 				$$.ajax({
 					dataType: 'json',
@@ -769,8 +788,113 @@ var app = {
 				});
 			}
 		});
+	},
 
-	}
+    setupSuggest: function() {
+        app.searchValues = {};
+
+        var autocompleteDropdownAjax = myApp.autocomplete({
+            input: '#autocomplete-dropdown-ajax',
+            openIn: 'dropdown',
+            preloader: true, //enable preloader
+            valueProperty: 'id', //object's "value" property name
+            textProperty: 'name', //object's "text" property name
+            limit: 20, //limit to 10 results
+            expandInput: true, // expand input
+            multiple: true,
+            source: function (autocomplete, query, render) {
+                var results = [];
+
+                if (query.length === 0) {
+                    render(results);
+                    return;
+                }
+
+                // Show Preloader
+                autocomplete.showPreloader();
+
+                // Do Ajax request to Autocomplete data
+                $$.ajax({
+                    url: 'http://r.uartema.com/api/api.php/ingredient?transform=1',
+                    method: 'GET',
+                    dataType: 'json',
+                    data: {
+                        filter: ['name,cs,' + query],
+                        page: '1,10',
+                        order: 'name'
+                    },
+                    success: function (data) {
+                        var res = data.ingredient;
+
+                        // Find matched items
+                        for ( var i = 0; i < res.length; i++ ) {
+                            res[i].name = res[i].name.toLowerCase();
+
+                            results.push(res[i]);
+                        }
+
+                        // Hide Preoloader
+                        autocomplete.hidePreloader();
+
+                        // Render items by passing array with result items
+                        render(results);
+                    }
+                });
+            },
+
+            onChange: function(ac, value) {
+                app.searchValues[value.id] = value.name;
+                app.processSearchChips();
+
+                $$('#autocomplete-dropdown-ajax').val('');
+            }
+        });
+    },
+
+    searchValues: {},
+
+    processSearchChips: function() {
+        $$('#selectedChips').html('');
+
+        $$.each(app.searchValues, function(id, name) {
+            var chip = $$('<div/>').addClass('chip').append(
+                $$('<div/>').addClass('chip-label').html(name)
+            ).data('id', id);
+
+            $$('#selectedChips').append(chip);
+        });
+    },
+
+    initChipEvents: function() {
+        $$(document).on('click', '#selectedChips .chip', function() {
+            var id = $$(this).data('id');
+
+            delete app.searchValues[id];
+            app.processSearchChips();
+        });
+
+        $$(document).on('click', '#processSearch', function() {
+            $$.ajax({
+                url: 'http://r.uartema.com/api/search.php',
+                method: 'GET',
+                dataType: 'json',
+                type: 'POST',
+                data: {
+                    ingredientIds:  Object.keys(app.searchValues)
+                },
+                success: function( resp ) {
+                    app.randomize = false;
+
+                    $$('#myContent').html('');
+
+                    app.loadIds = resp;
+                    app.loadRecepts();
+                    app.loadIds = [];
+                }
+            });
+
+        });
+    }
 };
 
 app.init();
