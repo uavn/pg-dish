@@ -815,7 +815,7 @@ var app = {
 
                 // Do Ajax request to Autocomplete data
                 $$.ajax({
-                    url: 'http://r.uartema.com/api/api.php/ingredient?transform=1',
+                    url: 'http://r.uartema.com/api/api.php/group?transform=1',
                     method: 'GET',
                     dataType: 'json',
                     data: {
@@ -824,7 +824,7 @@ var app = {
                         order: 'name'
                     },
                     success: function (data) {
-                        var res = data.ingredient;
+                        var res = data.group;
 
                         // Find matched items
                         for ( var i = 0; i < res.length; i++ ) {
@@ -880,7 +880,7 @@ var app = {
                 dataType: 'json',
                 type: 'POST',
                 data: {
-                    ingredientIds:  Object.keys(app.searchValues)
+                    groupIds:  Object.keys(app.searchValues)
                 },
                 success: function( resp ) {
                     app.randomize = false;
